@@ -21,6 +21,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLin
     soge::Logger::Init();
 
     const auto app = soge::CreateApplication();
+    app->HandleCLIArgs(__argc, __argv);
     app->Run();
     delete app;
 

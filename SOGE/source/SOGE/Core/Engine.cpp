@@ -31,7 +31,7 @@ namespace soge
         {
             Timestep::StartFrame();
             Timestep::CalculateDelta();
-            SOGE_INFO_LOG("DeltaTime: {0}", Timestep::RealDeltaTime());
+
         }
 
         this->Shutdown();
@@ -49,6 +49,11 @@ namespace soge
     void Engine::RequestShutdown()
     {
         m_isRunning = false;
+    }
+
+    void Engine::HandleCLIArgs(int argc, char** argv)
+    {
+        m_cliManager.ParseArgs(argc, argv);
     }
 
     void Engine::Shutdown()
