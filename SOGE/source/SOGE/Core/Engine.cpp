@@ -45,7 +45,11 @@ namespace soge
         {
             Timestep::StartFrame();
             Timestep::CalculateDelta();
-            SOGE_INFO_LOG("DeltaTime: {0}", Timestep::RealDeltaTime());
+
+            for (auto layer : m_renderLayers)
+            {
+                layer->OnUpdate();
+            }
         }
 
         Shutdown();

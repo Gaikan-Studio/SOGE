@@ -2,6 +2,7 @@
 #define SOGE_CORE_ENGINE_HPP
 
 #include "SOGE/System/Memory.hpp"
+#include "SOGE/Core/LayerStack.hpp"
 
 
 namespace soge
@@ -17,6 +18,7 @@ namespace soge
         static UniquePtr<Engine> s_instance;
         static std::mutex s_initMutex;
 
+        LayerStack m_renderLayers;
         bool m_isRunning;
 
     protected:
