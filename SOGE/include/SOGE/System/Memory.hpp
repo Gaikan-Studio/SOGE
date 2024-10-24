@@ -3,7 +3,6 @@
 
 #include <EASTL/shared_ptr.h>
 #include <EASTL/unique_ptr.h>
-#include <EASTL/utility.h>
 
 
 namespace soge
@@ -14,7 +13,7 @@ namespace soge
     template <typename T, typename... Args>
     constexpr SharedPtr<T> CreateShared(Args&&... args)
     {
-        return eastl::make_shared<T>(eastl::forward<Args>(args)...);
+        return eastl::make_shared<T>(std::forward<Args>(args)...);
     }
 
     template <typename T>
@@ -23,7 +22,7 @@ namespace soge
     template <typename T, typename... Args>
     constexpr UniquePtr<T> CreateUnique(Args&&... args)
     {
-        return eastl::make_unique<T>(eastl::forward<Args>(args)...);
+        return eastl::make_unique<T>(std::forward<Args>(args)...);
     }
 }
 

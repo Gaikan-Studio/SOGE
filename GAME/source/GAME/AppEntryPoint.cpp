@@ -10,10 +10,11 @@ namespace game
 
     Game::~Game()
     {
+        SOGE_APP_INFO_LOG("Destroy game...");
     }
 }
 
 soge::Engine* soge::CreateApplication()
 {
-    return new game::Game();
+    return Engine::Reset<game::Game>();
 }

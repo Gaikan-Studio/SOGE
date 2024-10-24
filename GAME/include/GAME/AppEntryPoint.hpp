@@ -11,7 +11,7 @@ namespace game
     {
     public:
         Game();
-        ~Game();
+        ~Game() override;
     };
 }
 

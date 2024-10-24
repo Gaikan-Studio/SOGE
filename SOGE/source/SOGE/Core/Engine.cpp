@@ -6,22 +6,36 @@
 
 namespace soge
 {
-    Engine* Engine::s_instance = nullptr;
+    UniquePtr<Engine> Engine::s_instance(nullptr);
+    std::mutex Engine::s_initMutex;
+
     Engine* Engine::GetInstance()
     {
-        if (s_instance == nullptr)
+        // Fast path: return the instance if it is already initialized
+        if (s_instance != nullptr)
         {
-            s_instance = new Engine();
+            return s_instance.get();
         }
 
-        return s_instance;
+        // Safe but slow path: initialize with default class if empty
+        std::lock_guard lock(s_initMutex);
+        // Additional check to ensure we are creating new instance exactly once
+        if (s_instance == nullptr)
+        {
+            // Replicating `make_unique` here because the constructor is protected
+            s_instance = UniquePtr<Engine>(new Engine());
+        }
+        return s_instance.get();
     }
 
-    Engine::Engine()
+    Engine::Engine() : m_isRunning(false)
     {
         SOGE_INFO_LOG("Initialize engine...");
+    }
 
-        m_isRunning = false;
+    Engine::~Engine()
+    {
+        SOGE_INFO_LOG("Destroy engine...");
     }
 
     void Engine::Run()
@@ -34,7 +48,7 @@ namespace soge
 
         }
 
-        this->Shutdown();
+        Shutdown();
     }
 
     void Engine::Update()
