@@ -10,7 +10,7 @@ namespace soge
     {
     private:
         eastl::vector<Layer*> m_layerBuffer;
-        unsigned m_layerInsertIndex;
+        unsigned m_layerInsertIndex = 0;
 
     public:
         LayerStack() = default;

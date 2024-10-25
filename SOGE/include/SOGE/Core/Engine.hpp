@@ -44,6 +44,9 @@ namespace soge
         void Update();
         void FixedUpdate();
         void RequestShutdown();
+
+        void PushLayer(Layer* aLayer);
+        void PushOverlay(Layer* aOverlayLayer);
     };
 
     template <DerivedFromEngine T, typename... Args>

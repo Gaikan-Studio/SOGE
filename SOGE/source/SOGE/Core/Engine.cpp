@@ -69,6 +69,18 @@ namespace soge
         m_isRunning = false;
     }
 
+    void Engine::PushLayer(Layer* aLayer)
+    {
+        m_renderLayers.PushLayer(aLayer);
+        aLayer->OnAttach();
+    }
+
+    void Engine::PushOverlay(Layer* aOverlayLayer)
+    {
+        m_renderLayers.PushOverlay(aOverlayLayer);
+        aOverlayLayer->OnAttach();
+    }
+
     void Engine::Shutdown()
     {
     }

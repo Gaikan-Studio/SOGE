@@ -5,10 +5,12 @@
 #include <SOGE/Core/EntryPoint.hpp>
 
 
-namespace game
+namespace soge_game
 {
     class Game final : public soge::Engine
     {
+        using parentClass = soge::Engine;
+
     public:
         Game();
         ~Game() override;
