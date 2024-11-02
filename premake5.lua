@@ -13,6 +13,7 @@ workspace "SOGE"
 
     group "Dependencies"
         include "3rdparty/EASTL/premake5.lua"
+        include "3rdparty/rttr/premake5.lua"
     group ""
 
     project "SOGE"
@@ -41,7 +42,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.backwardcpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.EASTL}",
             "%{wks.location}/%{IncludeThirdpartyDirs.EABase}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.UUID_v4}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.UUID_v4}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.rttr}"
         }
 
         defines
@@ -52,7 +54,8 @@ workspace "SOGE"
 
         links
         {
-            "EASTL"
+            "EASTL",
+            "RTTR"
         }
 
         filter "system:windows"
@@ -114,7 +117,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.backwardcpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.EASTL}",
             "%{wks.location}/%{IncludeThirdpartyDirs.EABase}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.UUID_v4}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.UUID_v4}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.rttr}"
         }
 
         links

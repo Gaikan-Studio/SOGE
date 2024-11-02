@@ -40,6 +40,9 @@ namespace soge
 
     void Engine::Run()
     {
+        AwesomeObject a;
+        std::cout << a.ClassName() << std::endl;
+
         m_isRunning = true;
         while (m_isRunning)
         {

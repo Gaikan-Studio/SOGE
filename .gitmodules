@@ -10,3 +10,6 @@
 [submodule "SOGE-UTEST"]
 	path = SOGE-UTEST
 	url = https://github.com/GaikanStudio/SOGE-UTEST.git
+[submodule "3rdparty/rttr/rttr"]
+	path = 3rdparty/rttr/rttr
+	url = https://github.com/rttrorg/rttr.git
