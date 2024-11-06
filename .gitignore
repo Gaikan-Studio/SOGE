@@ -22,6 +22,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 [Ll]ib/
+scripts/[rR]eflection_hash
 
 # Game/*.exe
 
@@ -64,3 +65,4 @@ bld/
 *.lib
 
 # !Scripts/MakeSpriteFont.exe
+![sS]cripts/header-parser.exe

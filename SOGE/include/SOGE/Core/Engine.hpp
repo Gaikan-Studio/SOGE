@@ -16,14 +16,26 @@ namespace soge
     public:
         CoolObject() = default;
         ~CoolObject() = default;
-
     };
 
+    REFLECT_CLASS()
     class AwesomeObject : public CoolObject
     {
         RTTR_ENABLE(CoolObject)
 
     public:
+        REFLECT_FIELD()
+        int someValue;
+
+    public:
+        REFLECT_CONSTRUCTOR()
+        AwesomeObject() = default;
+
+        REFLECT_METHOD(Set = someValue, Label = "", Desc = "")
+        void SetSomeValue(int v);
+
+        REFLECT_METHOD()
+        int GetSomeValue();
 
     };
 
@@ -32,6 +44,7 @@ namespace soge
 
     class Engine
     {
+
     private:
         static UniquePtr<Engine> s_instance;
         static std::mutex s_initMutex;
@@ -40,7 +53,6 @@ namespace soge
 
     protected:
         explicit Engine();
-
         void Shutdown();
 
     public:
