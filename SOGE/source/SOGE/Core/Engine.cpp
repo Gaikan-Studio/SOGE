@@ -6,13 +6,6 @@
 
 namespace soge
 {
-    RTTR_REGISTRATION
-    {
-        rttr::registration::class_<AwesomeObject>("AwesomeObject")
-            .constructor<>()
-            .property("someValue", &AwesomeObject::someValue);
-    }
-
     UniquePtr<Engine> Engine::s_instance(nullptr);
     std::mutex Engine::s_initMutex;
 
@@ -47,15 +40,6 @@ namespace soge
 
     void Engine::Run()
     {
-        AwesomeObject a;
-        std::cout << a.ClassName().c_str() << std::endl;
-        std::cout << a.SizeOf() << std::endl;
-
-        for (auto it : a.Fields())
-        {
-            std::cout << it.get_name() << std::endl;
-        }
-
         m_isRunning = true;
         while (m_isRunning)
         {

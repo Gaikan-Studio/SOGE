@@ -28,6 +28,10 @@ class ClassObject(object):
         self.parents = []
         self.reflectable = False
 
+        self.public_constructors = []
+        self.private_constructors = []
+        self.protected_constructors = []
+
         self.private_properties = []
         self.public_properties = []
         self.protected_properties = []
@@ -76,12 +80,11 @@ class ClassMethod(ClassData):
 
 class Argument(ClassData):
 
-    def __init__(self, _data_type=None, _name=None, _default_value=""):
+    def __init__(self, _data_type=None, _name=None):
         super().__init__(None, _data_type, _name)
-        self.default_value = _default_value
     
     def __str__(self) -> str:
-        return f'{self.data_type} {self.name} {self.default_value}'
+        return f'{self.data_type} {self.name}'
     
     def register_string(self):
         return super().register_string()
@@ -160,13 +163,37 @@ def read_class_data(header_dict):
                             if member_type == "constructor":
                                 arg_array = []
                                 arguments = class_member.get("arguments")
+                                print(arguments)
                                 for arg in arguments:
-                                    arg_type = arg.get("type").get("name")
-                                    arg_name = arg.get("name")
-                                    arg_default = arg.get("defaultValue")
-                                    arg_array.append(Argument(arg_type, arg_name, arg_default))
+                                    arg_type = arg.get("type")
+                                    arg_const = arg_type.get("const")
+                                    arg_object = None
+
+                                    if arg_type.get("type") == "literal":
+                                        arg_name = arg.get("name")
+                                        inner_typename = arg_type.get("name")
+                                        
+                                        if arg_const:
+                                            inner_typename = "const " + inner_typename
+                                        
+                                        arg_object = Argument(inner_typename, arg_name)
+                                        arg_array.append(arg_object)
+                                        continue
+
+                                    elif arg_type.get("type") == "reference":
+                                        # arg_name = arg.get()
+                                        pass
+                                    elif arg_type.get("type") == "pointer":
+                                        pass
 
                                 constructor = ClassConstructor(access, name, arg_array)
+                                if access == "public":
+                                    class_object.public_constructors.append(constructor)
+                                elif access == "private":
+                                    class_object.private_constructors.append(constructor)
+                                else:
+                                    class_object.protected_constructors.append(constructor)
+                                continue
 
                             if member_type == "property":
                                 data_type = class_member.get("dataType").get("name")

@@ -2,42 +2,11 @@
 #define SOGE_CORE_ENGINE_HPP
 
 #include "SOGE/System/Memory.hpp"
-#include "SOGE/Core/BaseObject.hpp"
 
 
 namespace soge
 {
     class Engine;
-
-    class CoolObject : public BaseObject
-    {
-        RTTR_ENABLE(BaseObject)
-
-    public:
-        CoolObject() = default;
-        ~CoolObject() = default;
-    };
-
-    REFLECT_CLASS()
-    class AwesomeObject : public CoolObject
-    {
-        RTTR_ENABLE(CoolObject)
-
-    public:
-        REFLECT_FIELD()
-        int someValue;
-
-    public:
-        REFLECT_CONSTRUCTOR()
-        AwesomeObject() = default;
-
-        REFLECT_METHOD(Set = someValue, Label = "", Desc = "")
-        void SetSomeValue(int v);
-
-        REFLECT_METHOD()
-        int GetSomeValue();
-
-    };
 
     template <typename T>
     concept DerivedFromEngine = std::is_base_of_v<Engine, T>;
