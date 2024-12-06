@@ -62,6 +62,10 @@ namespace soge
             Timestep::CalculateDelta();
 
             m_inputManager->Update();
+            for (auto layer : m_renderLayers)
+            {
+                layer->OnUpdate();
+            }
         }
 
         m_isRunning = false;
@@ -77,9 +81,26 @@ namespace soge
         return m_eventManager.get();
     }
 
+    InputManager* Engine::GetInputManager()
+    {
+        return Engine::GetInstance()->m_inputManager.get();
+    }
+
     void Engine::RequestShutdown()
     {
         m_shutdownRequested = true;
+    }
+
+    void Engine::PushLayer(Layer* aLayer)
+    {
+        m_renderLayers.PushLayer(aLayer);
+        aLayer->OnAttach();
+    }
+
+    void Engine::PushOverlay(Layer* aOverlayLayer)
+    {
+        m_renderLayers.PushOverlay(aOverlayLayer);
+        aOverlayLayer->OnAttach();
     }
 
     di::Container& Engine::GetContainer()

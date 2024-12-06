@@ -4,6 +4,7 @@
 #include "SOGE/Input/Impl/SDL/SDLInputCore.hpp"
 #include "SOGE/Input/Device/Keyboard.hpp"
 
+
 namespace soge
 {
     class SDLKeyboard final : public Keyboard

@@ -1,16 +1,18 @@
 #ifndef SOGE_INPUT_INPUTMANAGER_HPP
 #define SOGE_INPUT_INPUTMANAGER_HPP
 
+// Abstract
+#include "SOGE/Input/Device/Keyboard.hpp"
+#include "SOGE/Input/Device/Gamepad.hpp"
+#include "SOGE/Input/Device/Mouse.hpp"
+#include "SOGE/Input/InputCore.hpp"
+
 #include "SOGE/System/Memory.hpp"
 
 
 namespace soge
 {
-    class Mouse;
-    class Keyboard;
-    class Gamepad;
-    class InputDevice;
-    class InputCore;
+
 
     class InputManager
     {
@@ -27,6 +29,10 @@ namespace soge
         ~InputManager() = default;
 
         void Update();
+
+        Keyboard* GetKeyboard() const;
+        Mouse* GetMouse() const;
+
     };
 }
 

@@ -6,6 +6,7 @@
 #include "SOGE/Core/EventManager.hpp"
 #include "SOGE/Input/InputManager.hpp"
 #include "SOGE/System/Window.hpp"
+#include "SOGE/Core/LayerStack.hpp"
 
 
 namespace soge
@@ -21,9 +22,9 @@ namespace soge
         static UniquePtr<Engine> s_instance;
         static std::mutex s_mutex;
 
+        LayerStack m_renderLayers;
         UniquePtr<EventManager> m_eventManager;
         UniquePtr<Window> m_systemWindow;
-
         SharedPtr<InputManager> m_inputManager;
 
         bool m_isRunning;
@@ -40,11 +41,12 @@ namespace soge
 
         Engine(Engine&&) = delete;
         auto operator=(Engine&&) = delete;
-
         virtual ~Engine();
 
         void Run();
         void RequestShutdown();
+        void PushLayer(Layer* aLayer);
+        void PushOverlay(Layer* aOverlayLayer);
 
         [[nodiscard]]
         bool IsRunning() const;
@@ -54,6 +56,7 @@ namespace soge
 
     public:
         static Engine* GetInstance();
+        static InputManager* GetInputManager();
         template <DerivedFromEngine T = Engine, typename... Args>
         static T* Reset(Args&&... args);
 

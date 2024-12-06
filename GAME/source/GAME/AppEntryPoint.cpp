@@ -1,13 +1,15 @@
 #include "GAME/AppEntryPoint.hpp"
+#include "GAME/Layers/MainGameLayer.hpp"
 
 #include <SOGE/Core/EntryPoint.hpp>
 
 
-namespace game
+namespace soge_game
 {
     Game::Game()
     {
         SOGE_APP_INFO_LOG("Initialize game...");
+        parentClass::PushLayer(new MainGameLayer());
     }
 
     Game::~Game()
@@ -18,5 +20,5 @@ namespace game
 
 soge::Engine* soge::CreateApplication()
 {
-    return Engine::Reset<game::Game>();
+    return Engine::Reset<soge_game::Game>();
 }

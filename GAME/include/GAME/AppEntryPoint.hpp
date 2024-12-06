@@ -2,12 +2,15 @@
 #define GAME_APPENTRYPOINT_HPP
 
 #include <SOGE/SOGE.hpp>
+#include <SOGE/Core/Engine.hpp>
 
 
-namespace game
+namespace soge_game
 {
     class Game final : public soge::Engine
     {
+        using parentClass = soge::Engine;
+
     public:
         Game();
         ~Game() override;

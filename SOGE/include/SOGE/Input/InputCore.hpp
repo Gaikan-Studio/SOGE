@@ -1,6 +1,8 @@
 #ifndef SOGE_INPUT_INPUTCORE_HPP
 #define SOGE_INPUT_INPUTCORE_HPP
 
+#include "SOGE/System/Memory.hpp"
+
 
 namespace soge
 {
