@@ -35,6 +35,8 @@ namespace soge
         [[nodiscard]]
         std::uint32_t GetHeight() const override;
     };
+
+    using ImplWindow = SDLWindow;
 }
 
 #endif // SOGE_WINDOW_IMPL_SDL_SDLWINDOW_HPP

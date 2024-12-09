@@ -6,10 +6,7 @@
 #include "SOGE/DI/Container.hpp"
 #include "SOGE/Input/InputCompilePreproc.hpp"
 
-
-// clang-format off
-#include SOGE_ABS_COMPILED_INPUTSYSTEM_HEADER(SOGE/Input, InputCore.hpp)
-// clang-format on
+#include SOGE_ABS_COMPILED_INPUT_IMPL_HEADER(SOGE/Input, InputCore.hpp)
 
 
 namespace soge

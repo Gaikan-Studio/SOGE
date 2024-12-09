@@ -3,9 +3,9 @@
 #include "SOGE/Window/WindowModule.hpp"
 
 #include "SOGE/DI/Container.hpp"
+#include "SOGE/Window/WindowCompilePreproc.hpp"
 
-// TODO: replace with special impl include macros
-#include "SOGE/Window/Impl/SDL/SDLWindowCore.hpp"
+#include SOGE_ABS_COMPILED_WINDOW_IMPL_HEADER(SOGE/Window, WindowCore.hpp)
 
 #undef CreateWindow
 

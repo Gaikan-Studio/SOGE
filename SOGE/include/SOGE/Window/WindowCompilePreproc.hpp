@@ -1,0 +1,11 @@
+﻿#ifndef SOGE_WINDOW_WINDOWCOMPILEPREPROC_HPP
+#define SOGE_WINDOW_WINDOWCOMPILEPREPROC_HPP
+
+#include "SOGE/Utils/PreprocessorHelpers.hpp"
+
+
+#define SOGE_REL_COMPILED_WINDOW_IMPL_HEADER(Suffix) SOGE_REL_COMPILED_IMPL_HEADER(SOGE_WINDOW_IMPL, Suffix)
+#define SOGE_ABS_COMPILED_WINDOW_IMPL_HEADER(IncludeDir, Suffix)                                                       \
+    SOGE_ABS_COMPILED_IMPL_HEADER(SOGE_WINDOW_IMPL, IncludeDir, Suffix)
+
+#endif // SOGE_WINDOW_WINDOWCOMPILEPREPROC_HPP

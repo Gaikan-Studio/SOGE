@@ -36,7 +36,7 @@ namespace soge
     // Assertions
     ///////////////////////////
 
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(UpdateEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(UpdateEvent);
 
     ////////////////////////////
     // Event declarations

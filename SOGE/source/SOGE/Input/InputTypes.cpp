@@ -1,13 +1,6 @@
 #include "sogepch.hpp"
 
 #include "SOGE/Input/InputTypes.hpp"
-#include "SOGE/Input/InputCompilePreproc.hpp"
-
-// clang-format off
-#include SOGE_ABS_COMPILED_INPUTSYSTEM_HEADER(SOGE/Input, InputCore.hpp)
-#include SOGE_ABS_COMPILED_INPUTSYSTEM_HEADER(SOGE/Input, Keyboard.hpp)
-#include SOGE_ABS_COMPILED_INPUTSYSTEM_HEADER(SOGE/Input, Mouse.hpp)
-// clang-format on
 
 
 namespace soge
@@ -178,7 +171,7 @@ namespace soge
 
     bool Key::IsValid() const
     {
-        if (m_keyName.c_str() != "")
+        if (m_keyName != "")
         {
             LookupForDetails();
             return m_keyDetails.get() != nullptr;

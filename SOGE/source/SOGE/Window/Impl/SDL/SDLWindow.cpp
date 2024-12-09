@@ -1,7 +1,8 @@
 #include "sogepch.hpp"
 
-#include "SOGE/Utils/StringHelpers.hpp"
 #include "SOGE/Window/Impl/SDL/SDLWindow.hpp"
+
+#include "SOGE/Utils/StringHelpers.hpp"
 
 
 namespace soge

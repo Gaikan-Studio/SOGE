@@ -6,6 +6,11 @@
 
 namespace soge
 {
+    // This class exists just to share one-time SDL initialization and cleanup
+    // with multiple modules which depend on SDL (such as input and window).
+    //
+    // Feel free to initialize your libraries in the module constructor,
+    // but for C libraries without explicit context object this way is preferred.
     class SDLContext final
     {
     public:

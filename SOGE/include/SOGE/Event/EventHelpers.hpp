@@ -4,8 +4,8 @@
 #include "SOGE/Utils/PreprocessorHelpers.hpp"
 
 
-#define SG_DERIVED_FROM_STATIC_EVENT_ASSERT(eventName)                                                                 \
+#define SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(eventName)                                                               \
     static_assert(::soge::DerivedFromStaticEvent<eventName>,                                                           \
-                  UE_STRINGIZE(UE_JOIN(eventName, should have StaticEvent in parent hierarchy !)))
+                  SOGE_STRINGIZE(SOGE_JOIN(eventName, should have StaticEvent in parent hierarchy !)))
 
 #endif // SOGE_EVENT_EVENTHELPERS_HPP

@@ -180,13 +180,13 @@ namespace soge
     // Assertions
     /////////////////////
 
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyEventBase);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyPressedEvent);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyReleasedEvent);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseButtonPressedEvent);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseButtonReleasedEvent);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseMovedEvent);
-    SG_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseWheelEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyEventBase);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyPressedEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(KeyReleasedEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseButtonPressedEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseButtonReleasedEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseMovedEvent);
+    SOGE_DERIVED_FROM_STATIC_EVENT_ASSERT(MouseWheelEvent);
 
     ////////////////////////////
     // Event declarations

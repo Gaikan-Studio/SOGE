@@ -7,4 +7,4 @@
 #include "SOGE/Utils/StringHelpers.hpp"
 #include "SOGE/Utils/UUID.hpp"
 
-#endif // !SOGE_UTILS_UTILSINCLUDEHEADER_HPP
+#endif // SOGE_UTILS_UTILSINCLUDEHEADER_HPP

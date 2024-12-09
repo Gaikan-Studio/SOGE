@@ -21,3 +21,16 @@ AlwaysBreakTemplateDeclarations: Yes
 BreakAfterAttributes: Always
 BreakBeforeConceptDeclarations: Always
 IndentRequiresClause: False
+
+WhitespaceSensitiveMacros:
+  - SOGE_STRINGIZE
+  - SOGE_JOIN
+  - SOGE_REL_COMPILED_IMPL_HEADER
+  - SOGE_ABS_COMPILED_IMPL_HEADER
+  - SOGE_REL_COMPILED_PLATFORM_HEADER
+  - SOGE_ABS_COMPILED_PLATFORM_HEADER
+  # Specific implementations
+  - SOGE_REL_COMPILED_INPUT_IMPL_HEADER
+  - SOGE_ABS_COMPILED_INPUT_IMPL_HEADER
+  - SOGE_REL_COMPILED_WINDOW_IMPL_HEADER
+  - SOGE_ABS_COMPILED_WINDOW_IMPL_HEADER
