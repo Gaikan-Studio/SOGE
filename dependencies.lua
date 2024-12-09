@@ -1,4 +1,3 @@
-
 -- Include directories
 IncludeThirdpartyDirs = {}
 IncludeThirdpartyDirs["spdlog"] = "3rdparty/spdlog/spdlog/include"
@@ -9,6 +8,7 @@ IncludeThirdpartyDirs["UUID_v4"] = "3rdparty/uuid_v4/uuid_v4/include"
 IncludeThirdpartyDirs["eventpp"] = "3rdparty/eventpp/eventpp/include"
 IncludeThirdpartyDirs["kangaru"] = "3rdparty/kangaru/kangaru/include"
 IncludeThirdpartyDirs["SDL3"] = "3rdparty/SDL/SDL/include"
+IncludeThirdpartyDirs["vgjs"] = "3rdparty/vgjs/vgjs/include"
 
 -- Include libs
 Libraries = {}

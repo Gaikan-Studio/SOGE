@@ -3,29 +3,37 @@
 
 namespace soge_game
 {
-    MainGameLayer::MainGameLayer() : soge::Layer("MainGameLayer")
-    {
-    }
-
-    MainGameLayer::~MainGameLayer()
+    MainGameLayer::MainGameLayer() : Layer("MainGameLayer")
     {
     }
 
     void MainGameLayer::OnAttach()
     {
-        SOGE_APP_INFO_LOG("Layer {0} attached", this->m_layerName.c_str());
+        SOGE_APP_INFO_LOG("Layer {} attached...", m_layerName.c_str());
     }
 
     void MainGameLayer::OnDetach()
     {
+        SOGE_APP_INFO_LOG("Layer {} detached...", m_layerName.c_str());
     }
 
     void MainGameLayer::OnUpdate()
     {
-        auto inputModule = soge::Engine::GetInstance()->GetModule<soge::InputModule>();
+        const auto engine = soge::Engine::GetInstance();
+        const auto inputModule = engine->GetModule<soge::InputModule>();
+        if (inputModule == nullptr)
+        {
+            return;
+        }
+
         if (inputModule->IsKeyPressed(soge::Keys::W))
         {
-            SOGE_APP_INFO_LOG("Key W pressed");
+            SOGE_APP_INFO_LOG("Key W pressed...");
+        }
+        else if (inputModule->IsKeyPressed(soge::Keys::Escape))
+        {
+            SOGE_APP_INFO_LOG("Key Escape pressed: shutting down...");
+            engine->RequestShutdown();
         }
     }
 

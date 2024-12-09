@@ -1,6 +1,8 @@
 #include "sogepch.hpp"
 
 #include "SOGE/Core/Engine.hpp"
+
+#include "SOGE/Core/JobSystem.hpp"
 #include "SOGE/Core/Timestep.hpp"
 #include "SOGE/Event/EventModule.hpp"
 #include "SOGE/Input/InputModule.hpp"
@@ -36,7 +38,7 @@ namespace soge
         return s_instance.get();
     }
 
-    Engine::Engine() : m_isRunning(false), m_shutdownRequested(false)
+    Engine::Engine() : m_isRunning(false), m_shutdownRequested(false), m_jobs(nullptr)
     {
         SOGE_INFO_LOG("Initialize engine...");
 
@@ -59,6 +61,8 @@ namespace soge
 
         // Prevent users from resetting engine while it is running
         std::lock_guard lock(s_mutex);
+
+        m_jobs = &m_container.Provide<JobSystem>();
 
         m_isRunning = true;
         for (Module& module : m_moduleManager)
@@ -94,6 +98,7 @@ namespace soge
         m_isRunning = false;
         m_removedModules.clear();
         m_container.Clear();
+        m_jobs = nullptr;
     }
 
     bool Engine::IsRunning() const

@@ -9,17 +9,13 @@ namespace soge_game
     class MainGameLayer final : public soge::Layer
     {
     private:
-
-
     public:
-        MainGameLayer();
-        ~MainGameLayer();
+        explicit MainGameLayer();
 
-        virtual void OnAttach() override;
-        virtual void OnDetach() override;
-        virtual void OnUpdate() override;
-        virtual void OnFixedUpdate(float aDeltaTime) override;
-
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnUpdate() override;
+        void OnFixedUpdate(float aDeltaTime) override;
     };
 }
 

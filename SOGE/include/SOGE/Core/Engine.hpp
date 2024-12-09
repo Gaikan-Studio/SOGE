@@ -20,9 +20,11 @@ namespace soge
         static UniquePtr<Engine> s_instance;
         static std::mutex s_mutex;
 
-        LayerStack m_renderLayers;
         bool m_isRunning;
         bool m_shutdownRequested;
+
+        LayerStack m_renderLayers;
+        class JobSystem* m_jobs;
 
         di::Container m_container;
         ModuleManager m_moduleManager;

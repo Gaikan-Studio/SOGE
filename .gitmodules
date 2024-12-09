@@ -19,3 +19,6 @@
 [submodule "3rdparty/SDL/SDL"]
 	path = 3rdparty/SDL/SDL
 	url = https://github.com/libsdl-org/SDL.git
+[submodule "3rdparty/vgjs/vgjs"]
+	path = 3rdparty/vgjs/vgjs
+	url = https://github.com/hlavacs/ViennaGameJobSystem.git
