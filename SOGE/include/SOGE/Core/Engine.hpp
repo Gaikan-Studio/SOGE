@@ -1,6 +1,7 @@
 #ifndef SOGE_CORE_ENGINE_HPP
 #define SOGE_CORE_ENGINE_HPP
 
+#include "SOGE/Core/JobSystem.hpp"
 #include "SOGE/Core/LayerStack.hpp"
 #include "SOGE/Core/ModuleManager.hpp"
 #include "SOGE/DI/Container.hpp"
@@ -24,7 +25,7 @@ namespace soge
         bool m_shutdownRequested;
 
         LayerStack m_renderLayers;
-        class JobSystem* m_jobs;
+        JobSystem* m_jobSystem;
 
         di::Container m_container;
         ModuleManager m_moduleManager;
