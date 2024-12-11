@@ -2,7 +2,6 @@
 #define SOGE_INPUT_DEVICE_MOUSE_HPP
 
 #include "SOGE/Input/Device/InputDevice.hpp"
-#include "SOGE/Input/InputTypes.hpp"
 
 
 namespace soge
@@ -13,7 +12,6 @@ namespace soge
         explicit Mouse(eastl::string_view aMouseName);
 
         virtual void Update() = 0;
-
     };
 }
 

@@ -11,21 +11,24 @@
 
 namespace soge
 {
-    InputModule::InputModule() : m_inputCore(nullptr)
+    InputModule::InputModule() : m_inputCore(nullptr), m_eventModule(nullptr)
     {
         Keys::Initialize();
     }
 
     void InputModule::Load(di::Container& aContainer, ModuleManager& aModuleManager)
     {
-        aModuleManager.CreateModule<EventModule>();
         m_inputCore = &aContainer.Provide<ImplInputCore>();
+        m_eventModule = &aModuleManager.CreateModule<EventModule>().first;
+        m_updateEventHandle = m_eventModule->PushBack<UpdateEvent>([this](const UpdateEvent&) { Update(); });
 
         SOGE_INFO_LOG("Input module loaded...");
     }
 
     void InputModule::Unload(di::Container& aContainer, ModuleManager& aModuleManager)
     {
+        m_eventModule->Remove(m_updateEventHandle);
+        m_eventModule = nullptr;
         m_inputCore = nullptr;
 
         SOGE_INFO_LOG("Input module unloaded...");

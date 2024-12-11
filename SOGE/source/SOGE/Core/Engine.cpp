@@ -70,16 +70,16 @@ namespace soge
         SOGE_INFO_LOG(R"(Created window "{}" of width {} and height {} with UUID {})",
                       EAToNarrow(window.GetTitle()).c_str(), window.GetWidth(), window.GetHeight(), uuid.str());
 
+        const auto eventModule = GetModule<EventModule>();
+
         m_shutdownRequested = false;
         while (!m_shutdownRequested)
         {
             Timestep::StartFrame();
             Timestep::CalculateDelta();
 
-            GetModule<InputModule>()->Update();
-
-            const auto eventModule = GetModule<EventModule>();
-            eventModule->Dispatch<UpdateEvent>(Timestep::DeltaTime());
+            eventModule->Enqueue<UpdateEvent>(Timestep::DeltaTime());
+            eventModule->DispatchQueue<UpdateEvent>();
 
             for (const auto layer : m_renderLayers)
             {

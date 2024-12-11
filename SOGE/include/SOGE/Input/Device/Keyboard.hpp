@@ -2,7 +2,6 @@
 #define SOGE_INPUT_DEVICE_KEYBOARD_HPP
 
 #include "SOGE/Input/Device/InputDevice.hpp"
-#include "SOGE/Input/InputTypes.hpp"
 
 
 namespace soge
@@ -13,7 +12,6 @@ namespace soge
         explicit Keyboard(eastl::string_view aKeyboardName);
 
         virtual void Update() = 0;
-
     };
 }
 
