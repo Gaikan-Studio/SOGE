@@ -3,6 +3,7 @@
 #include "SOGE/Core/JobSystem.hpp"
 
 #include <VGJS.h>
+#include <VGJSCoro.h>
 
 
 namespace

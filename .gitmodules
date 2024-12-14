@@ -21,4 +21,4 @@
 	url = https://github.com/libsdl-org/SDL.git
 [submodule "3rdparty/vgjs/vgjs"]
 	path = 3rdparty/vgjs/vgjs
-	url = https://github.com/hlavacs/ViennaGameJobSystem.git
+	url = https://github.com/tuguzT/ViennaGameJobSystem.git
