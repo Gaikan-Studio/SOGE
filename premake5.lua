@@ -47,7 +47,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.kangaru}",
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.vgjs}"
         }
 
         defines
@@ -150,7 +151,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.kangaru}",
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.vgjs}"
         }
 
         links

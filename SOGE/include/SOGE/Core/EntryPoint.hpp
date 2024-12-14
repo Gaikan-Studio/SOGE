@@ -16,12 +16,33 @@ namespace soge
     [[nodiscard]]
     inline int Launch(const std::span<char*> args)
     {
+        class JobSystemGuard
+        {
+        public:
+            explicit JobSystemGuard(const std::uint16_t aThreadCount = 0)
+            {
+                JobSystem::Initialize(aThreadCount);
+            }
+
+            explicit JobSystemGuard(const JobSystemGuard&) = delete;
+            JobSystemGuard& operator=(const JobSystemGuard&) = delete;
+
+            explicit JobSystemGuard(JobSystemGuard&&) = delete;
+            JobSystemGuard& operator=(JobSystemGuard&&) = delete;
+
+            ~JobSystemGuard()
+            {
+                JobSystem::Terminate();
+            }
+        };
+
         if (!ConsoleInit(args))
         {
             return EXIT_FAILURE;
         }
 
         Logger::Init();
+        JobSystemGuard jobSystemGuard;
 
         const auto app = CreateApplication();
         app->Run();

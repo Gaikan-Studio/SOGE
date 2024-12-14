@@ -1,6 +1,7 @@
 #ifndef SOGE_CORE_ENGINE_HPP
 #define SOGE_CORE_ENGINE_HPP
 
+#include "SOGE/Core/JobSystem.hpp"
 #include "SOGE/Core/LayerStack.hpp"
 #include "SOGE/Core/ModuleManager.hpp"
 #include "SOGE/DI/Container.hpp"
@@ -20,9 +21,11 @@ namespace soge
         static UniquePtr<Engine> s_instance;
         static std::mutex s_mutex;
 
-        LayerStack m_renderLayers;
         bool m_isRunning;
         std::atomic_bool m_shutdownRequested;
+
+        LayerStack m_renderLayers;
+        JobSystem* m_jobSystem;
 
         di::Container m_container;
         ModuleManager m_moduleManager;

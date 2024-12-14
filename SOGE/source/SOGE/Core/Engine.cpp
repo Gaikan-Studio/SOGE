@@ -1,6 +1,7 @@
 #include "sogepch.hpp"
 
 #include "SOGE/Core/Engine.hpp"
+
 #include "SOGE/Core/Timestep.hpp"
 #include "SOGE/Event/EventModule.hpp"
 #include "SOGE/Input/InputModule.hpp"
@@ -37,7 +38,7 @@ namespace soge
         return s_instance.get();
     }
 
-    Engine::Engine(AccessTag) : m_isRunning(false), m_shutdownRequested(false)
+    Engine::Engine(AccessTag) : m_isRunning(false), m_shutdownRequested(false), m_jobSystem(nullptr)
     {
         SOGE_INFO_LOG("Initialize engine...");
 
@@ -70,6 +71,8 @@ namespace soge
         std::lock_guard lock(s_mutex);
         constexpr AccessTag tag;
 
+        m_jobSystem = &m_container.Provide<JobSystem>();
+
         m_isRunning = true;
         for (Module& module : m_moduleManager)
         {
@@ -96,6 +99,9 @@ namespace soge
             {
                 layer->OnUpdate();
             }
+
+            m_jobSystem->Schedule([] { SOGE_INFO_LOG("Delta time is: {}", Timestep::DeltaTime()); });
+            m_jobSystem->Wait();
         }
 
         Unload(tag);
@@ -106,6 +112,7 @@ namespace soge
         m_isRunning = false;
         m_removedModules.clear();
         m_container.Clear();
+        m_jobSystem = nullptr;
     }
 
     bool Engine::IsRunning() const
