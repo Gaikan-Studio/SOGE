@@ -53,31 +53,40 @@ namespace soge
     {
     }
 
-    JobSystem::JobSystem(const std::uint16_t aThreadCount) : m_impl(CreateUnique<Impl>())
+    void JobSystem::Initialize(const std::uint16_t aThreadCount)
     {
-        const auto instanceId = m_impl->m_instanceId;
         if (aThreadCount == 0)
         {
-            SOGE_INFO_LOG("Initializing job system {} with default thread count...", instanceId);
+            SOGE_INFO_LOG("Initializing job system with default thread count...");
         }
         else
         {
-            SOGE_INFO_LOG("Initializing job system {} with thread count of {}...", instanceId, aThreadCount);
+            SOGE_INFO_LOG("Initializing job system with thread count of {}...", aThreadCount);
         }
 
         const vgjs::thread_count_t threadCount{aThreadCount};
-        constexpr vgjs::thread_index_t threadIndex{};
+        const vgjs::thread_index_t threadIndex{0};
         vgjs::JobSystem jobSystem{threadCount, threadIndex, &g_jobSystemMemoryResource};
 
-        SOGE_INFO_LOG("Job system {} initialized successfully with thread count of {}!", instanceId,
+        SOGE_INFO_LOG("Job system initialized successfully with thread count of {}!",
                       jobSystem.get_thread_count().value);
+    }
+
+    void JobSystem::Terminate()
+    {
+        SOGE_INFO_LOG("Cleaning up job system...");
+
+        vgjs::JobSystem jobSystem;
+        jobSystem.terminate();
+        jobSystem.wait_for_termination();
+    }
+
+    JobSystem::JobSystem() : m_impl(CreateUnique<Impl>())
+    {
     }
 
     JobSystem::~JobSystem()
     {
-        const auto instanceId = m_impl->m_instanceId;
-        SOGE_INFO_LOG("Cleaning up job system {}...", instanceId);
-
         Wait();
     }
 
@@ -89,31 +98,36 @@ namespace soge
 
     void JobSystem::Schedule(std::function<void()> aJob)
     {
+        // For better debugging experience
         Impl& impl = *m_impl;
-        vgjs::JobSystem jobSystem;
 
         // Register job for this job system instance
         ++impl.m_jobCount;
 
-        const auto instanceId = impl.m_instanceId;
-        auto job = [job = std::move(aJob), &impl] {
-            job();
+        vgjs::Function job{
+            [job = std::move(aJob), &impl] {
+                job();
 
-            // Unregister job from this job system instance
-            --impl.m_jobCount;
+                // Unregister job from this job system instance
+                --impl.m_jobCount;
 
-            // Notify all waiting threads that all jobs were completed
-            if (impl.m_jobCount == 0)
-            {
-                impl.m_allJobsCompleted = true;
-                impl.m_allJobsCompleted.notify_one();
-            }
+                // Notify all waiting threads that all jobs were completed
+                if (impl.m_jobCount == 0)
+                {
+                    impl.m_allJobsCompleted = true;
+                    impl.m_allJobsCompleted.notify_all();
+                }
+            },
+            vgjs::thread_index_t{}, // could be useful
         };
-        jobSystem.schedule(std::move(job), vgjs::tag_t{instanceId});
+
+        vgjs::JobSystem jobSystem;
+        jobSystem.schedule(std::move(job));
     }
 
     void JobSystem::Wait()
     {
+        // For better debugging experience
         Impl& impl = *m_impl;
 
         // Fast path: nothing to wait

@@ -15,7 +15,10 @@ namespace soge
         UniquePtr<Impl> m_impl;
 
     public:
-        explicit JobSystem(std::uint16_t aThreadCount = 0);
+        static void Initialize(std::uint16_t aThreadCount = 0);
+        static void Terminate();
+
+        explicit JobSystem();
 
         explicit JobSystem(const JobSystem&) = delete;
         JobSystem& operator=(const JobSystem&) = delete;
