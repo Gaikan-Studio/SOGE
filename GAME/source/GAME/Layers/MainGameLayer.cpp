@@ -9,12 +9,12 @@ namespace soge_game
 
     void MainGameLayer::OnAttach()
     {
-        SOGE_APP_INFO_LOG("Layer {} attached...", m_layerName.c_str());
+        SOGE_APP_INFO_LOG(R"(Layer "{}" attached...)", m_layerName.c_str());
     }
 
     void MainGameLayer::OnDetach()
     {
-        SOGE_APP_INFO_LOG("Layer {} detached...", m_layerName.c_str());
+        SOGE_APP_INFO_LOG(R"(Layer "{}" detached...)", m_layerName.c_str());
     }
 
     void MainGameLayer::OnUpdate()

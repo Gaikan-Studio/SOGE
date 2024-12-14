@@ -8,12 +8,12 @@ namespace soge_game
 {
     class MainGameLayer final : public soge::Layer
     {
-    private:
     public:
         explicit MainGameLayer();
 
         void OnAttach() override;
         void OnDetach() override;
+
         void OnUpdate() override;
         void OnFixedUpdate(float aDeltaTime) override;
     };
