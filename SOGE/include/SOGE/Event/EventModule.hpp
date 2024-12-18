@@ -117,9 +117,10 @@ namespace soge
         void ClearQueue();
         void Clear();
 
-        template <DerivedFromEvent E, typename... Args>
-        requires std::is_constructible_v<E, Args...>
-        void Dispatch(Args&&... args);
+        // TODO: return this method when weird library bug will be fixed
+        // template <DerivedFromEvent E, typename... Args>
+        // requires std::is_constructible_v<E, Args...>
+        // void Dispatch(Args&&... args);
 
         template <DerivedFromEvent E, typename... Args>
         requires std::is_constructible_v<E, Args...>
@@ -241,13 +242,13 @@ namespace soge
         return IsEmpty(eventType);
     }
 
-    template <DerivedFromEvent E, typename... Args>
-    requires std::is_constructible_v<E, Args...>
-    void EventModule::Dispatch(Args&&... args)
-    {
-        AnyEvent event{E{std::forward<Args>(args)...}};
-        m_eventQueue.dispatch(event);
-    }
+    // template <DerivedFromEvent E, typename... Args>
+    // requires std::is_constructible_v<E, Args...>
+    // void EventModule::Dispatch(Args&&... args)
+    // {
+    //     AnyEvent event{E{std::forward<Args>(args)...}};
+    //     m_eventQueue.dispatch(event);
+    // }
 
     template <DerivedFromEvent E, typename... Args>
     requires std::is_constructible_v<E, Args...>

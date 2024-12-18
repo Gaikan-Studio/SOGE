@@ -14,7 +14,11 @@ namespace soge
     class InputModule : public Module
     {
     private:
+        void Update() const;
+
         InputCore* m_inputCore;
+        EventModule* m_eventModule;
+        EventModule::FunctionHandle m_updateEventHandle;
 
     public:
         explicit InputModule();
@@ -33,8 +37,6 @@ namespace soge
         Gamepad* GetGamepad() const;
         [[nodiscard]]
         Mouse* GetMouse() const;
-
-        void Update() const;
     };
 }
 
