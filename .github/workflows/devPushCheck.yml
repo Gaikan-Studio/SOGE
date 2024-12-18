@@ -1,0 +1,37 @@
+name: Build project
+
+on:
+  push:
+    - dev
+    - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        build_type: [Debug, Release]  # This will run the build for both Debug and Release modes
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Setup visual studio
+      - name: Set up Visual Studio
+        uses: microsoft/setup-msbuild@v1.1
+        with:
+          vs-version: 'vs2022'  # or "latest"
+      
+      # Run GenerateProject.bat to generate the Visual Studio solution
+      - name: Generate Visual Studio Project with Premake
+        run:
+          ./GenerateProject.bat
+      
+      # Build generated solution with MSBuild
+      - name: Build generated Visual Studio solution
+        run:
+          msbuild YourSolution.sln /p:Configuration=${{ matrix.build_type }} /p:Platform=x64
+      
+      #TODO: Run tests
