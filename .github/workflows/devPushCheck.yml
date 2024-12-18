@@ -38,6 +38,6 @@ jobs:
       # Build generated solution with MSBuild
       - name: Build generated Visual Studio solution
         run:
-          msbuild YourSolution.sln /p:Configuration=${{ matrix.build_type }} /p:Platform=x64
+          msbuild SOGE.sln /p:Configuration=${{ matrix.build_type }} /p:Platform=x64
 
       #TODO: Run tests
