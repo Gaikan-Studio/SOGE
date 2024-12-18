@@ -4,6 +4,7 @@ on:
     branches:
       - dev
       - master
+      - workflow
 
 jobs:
   build:
