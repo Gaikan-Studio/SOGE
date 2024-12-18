@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
 
     strategy:
-      Error: The operation was canceled.
+      fail-fast: false
       matrix:
         build_type: [Debug, Release]  # This will run the build for both Debug and Release modes
 
