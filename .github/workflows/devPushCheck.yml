@@ -1,8 +1,9 @@
 name: Build project
 on:
   push:
-    - dev
-    - master
+    branches:
+      - dev
+      - master
 
 jobs:
   build:
