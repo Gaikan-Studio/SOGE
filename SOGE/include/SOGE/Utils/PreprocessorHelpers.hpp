@@ -39,4 +39,7 @@
 #define SOGE_ABS_COMPILED_PLATFORM_HEADER(IncludeDir, Suffix)                                                          \
     SOGE_STRINGIZE(SOGE_JOIN(IncludeDir, /SOGE_JOIN(PLATFORM_HEADER_NAME, Suffix)))
 
+#define SOGE_LOG_TITLE_DIVIDER(title)                                                                                  \
+    SOGE_INFO_LOG("\n\n--------------------\n {} \n--------------------\n\n", SOGE_STRINGIZE(title));
+
 #endif // SOGE_UTILS_PREPROCESSORHELPERS_HPP

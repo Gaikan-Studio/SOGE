@@ -17,6 +17,9 @@ namespace soge
     }
 
     template <typename T>
+    using WeakPtr = eastl::weak_ptr<T>;
+
+    template <typename T>
     using UniquePtr = eastl::unique_ptr<T>;
 
     template <typename T, typename... Args>

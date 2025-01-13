@@ -50,6 +50,7 @@ namespace soge
     using ImplInputCore = SDLInputCore;
 }
 
-SOGE_DI_REGISTER_NS(soge, SDLInputCore, df::Single<SDLInputCore, EventModule, SDLContext>, tag::Overrides<InputCore>)
+SOGE_DI_REGISTER_NS(soge, SDLInputCore, df::Single<SDLInputCore, EventModule, SDLContext>,
+                    tag::Overrides<SDLInputCore, InputCore>)
 
 #endif // SOGE_INPUT_IMPL_SDL_SDLINPUTCORE_HPP

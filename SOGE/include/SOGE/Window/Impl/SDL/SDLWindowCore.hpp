@@ -22,7 +22,8 @@ namespace soge
     using ImplWindowCore = SDLWindowCore;
 }
 
-SOGE_DI_REGISTER_NS(soge, SDLWindowCore, df::Single<SDLWindowCore, SDLContext>, tag::Overrides<WindowCore>)
+SOGE_DI_REGISTER_NS(soge, SDLWindowCore, df::Single<SDLWindowCore, SDLContext>,
+                    tag::Overrides<SDLWindowCore, WindowCore>)
 
 
 #pragma pop_macro("CreateWindow")

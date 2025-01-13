@@ -10,16 +10,6 @@
 #undef CreateWindow
 
 
-template <>
-struct eastl::hash<UUIDv4::UUID>
-{
-    std::size_t operator()(const UUIDv4::UUID& aUuid) const
-    {
-        constexpr std::hash<UUIDv4::UUID> hash;
-        return hash(aUuid);
-    }
-};
-
 namespace soge
 {
     class WindowModule : public Module

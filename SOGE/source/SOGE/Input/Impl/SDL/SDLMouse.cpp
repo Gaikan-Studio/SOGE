@@ -30,9 +30,9 @@ namespace soge
             switch (sdlEvent.type)
             {
             case SDL_EVENT_MOUSE_MOTION: {
-                float x, y;
-                SDL_GetMouseState(&x, &y);
-                events.Enqueue<MouseMovedEvent>(x, y);
+                float xOffset = sdlEvent.motion.xrel;
+                float yOffset = sdlEvent.motion.yrel;
+                events.Enqueue<MouseMovedEvent>(xOffset, yOffset);
 
                 break;
             }

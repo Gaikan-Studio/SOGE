@@ -22,3 +22,12 @@
 [submodule "3rdparty/glm/glm"]
 	path = 3rdparty/glm/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "3rdparty/NVRHI/NVRHI"]
+	path = 3rdparty/NVRHI/NVRHI
+	url = https://github.com/NVIDIAGameWorks/nvrhi.git
+[submodule "3rdparty/NRI/NRI"]
+	path = 3rdparty/NRI/NRI
+	url = https://github.com/NVIDIAGameWorks/NRI.git
+[submodule "3rdparty/ShaderMake/ShaderMake"]
+	path = 3rdparty/ShaderMake/ShaderMake
+	url = https://github.com/NVIDIAGameWorks/ShaderMake.git

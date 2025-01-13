@@ -52,7 +52,7 @@ namespace soge
 
     float Timestep::FrameTime()
     {
-        return s_frameTime;
+        return static_cast<float>(s_frameTime);
     }
 
     std::uint64_t Timestep::GetMilliseconds()

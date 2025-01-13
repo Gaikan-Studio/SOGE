@@ -18,4 +18,13 @@ namespace soge
     };
 }
 
+template <>
+struct eastl::hash<UUIDv4::UUID>
+{
+    std::size_t operator()(const UUIDv4::UUID& aUuid) const
+    {
+        return aUuid.hash();
+    }
+};
+
 #endif // SOGE_UTILS_UUID_HPP

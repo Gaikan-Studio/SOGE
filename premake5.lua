@@ -14,8 +14,14 @@ workspace "SOGE"
     group "Dependencies"
         include "3rdparty/EASTL/premake5.lua"
         include "3rdparty/kangaru/premake5.lua"
+
+        -- Doesn't shown as subproject in MSVC solution
+
         include "3rdparty/SDL/premake5.lua"
         include "3rdparty/glm/premake5.lua"
+        include "3rdparty/NRI/premake5.lua"
+        include "3rdparty/NVRHI/premake5.lua"
+        include "3rdparty/ShaderMake/premake5.lua"
     group ""
 
     project "SOGE"
@@ -34,7 +40,8 @@ workspace "SOGE"
         files
         {
             "%{wks.location}/%{prj.name}/include/**.hpp",
-            "%{wks.location}/%{prj.name}/source/**.cpp"
+            "%{wks.location}/%{prj.name}/source/**.cpp",
+            "%{wks.location}/%{prj.name}/resources/**"
         }
 
         includedirs
@@ -50,24 +57,48 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.glm}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
         }
 
         defines
         {
             "_CRT_SECURE_NO_WARNINGS",
             "SPDLOG_WCHAR_TO_UTF8_SUPPORT",
+            "GLM_ENABLE_EXPERIMENTAL",
 
             "SOGE_INPUT_IMPL=SDL",
             "SOGE_WINDOW_IMPL=SDL",
-            "SOGE_SYSTEM_IMPL=SDL"
+            "SOGE_SYSTEM_IMPL=SDL",
+            "SOGE_GRAPHICS_IMPL=D3D12", -- D3D11/D3D12/VK
+            "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_D3D12=dxil",
+            "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_VK=spirv",
         }
 
         links
         {
             "EASTL",
-            "kangaru"
+            "kangaru",
+            "nvrhi",
+            "nvrhi_d3d11",
+            "nvrhi_d3d12",
+            "nvrhi_vk",
         }
+
+        prebuildcommands
+        {
+            shadermake
+            {
+                platform = shadermake_platform.DXIL,
+                config = "%{!wks.location}/SOGE/resources/shaders/simple.shadermake",
+                output = "%{!wks.location}/GAME/resources/shaders"
+            }
+        }
+
+        filter "files:**.hlsl"
+            flags "ExcludeFromBuild"
 
         filter "system:windows"
             systemversion "latest"
@@ -84,19 +115,34 @@ workspace "SOGE"
             defines
             {
                 "SOGE_DEBUG",
-                "SOGE_ENABLE_ASSERT"
+                "SOGE_ENABLE_ASSERT",
+                "TRACEDESIGNTIME=true"
             }
 
             links 
             {
                 "%{wks.location}/%{Libraries.SDL_UCLIB_D}",
                 "%{wks.location}/%{Libraries.SDL3_DLL_D}",
-                "%{wks.location}/%{Libraries.SDL3_LIB_D}"
+                "%{wks.location}/%{Libraries.SDL3_LIB_D}",
+
+                -- NRI
+
+                "%{wks.location}/%{Libraries.NRI_D3D11_D}",
+                "%{wks.location}/%{Libraries.NRI_D3D12_D}",
+                "%{wks.location}/%{Libraries.NRI_NONE_D}",
+                "%{wks.location}/%{Libraries.NRI_SHARED_D}",
+                "%{wks.location}/%{Libraries.NRI_VALIDATION_D}",
+                "%{wks.location}/%{Libraries.NRI_VK_D}",
+                "%{wks.location}/%{Libraries.NRI_D}",
+                "%{wks.location}/%{Libraries.NRI_DLL_D}",
+                "%{wks.location}/%{Libraries.NRI_AMDAGS_DLL_D}",
             }
 
             postbuildcommands
             {
-                "{COPYFILE} %{wks.location}/%{Libraries.SDL3_DLL_D} %{wks.location}/GAME"
+                "{COPYFILE} %{wks.location}/%{Libraries.SDL3_DLL_D} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.NRI_DLL_D} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.NRI_AMDAGS_DLL_D} %{wks.location}/GAME"
             }
 
         filter "configurations:Release"
@@ -111,12 +157,26 @@ workspace "SOGE"
             {
                 "%{wks.location}/%{Libraries.SDL_UCLIB_R}",
                 "%{wks.location}/%{Libraries.SDL3_DLL_R}",
-                "%{wks.location}/%{Libraries.SDL3_LIB_R}"
+                "%{wks.location}/%{Libraries.SDL3_LIB_R}",
+
+                -- NRI
+
+                "%{wks.location}/%{Libraries.NRI_D3D11_R}",
+                "%{wks.location}/%{Libraries.NRI_D3D12_R}",
+                "%{wks.location}/%{Libraries.NRI_NONE_R}",
+                "%{wks.location}/%{Libraries.NRI_SHARED_R}",
+                "%{wks.location}/%{Libraries.NRI_VALIDATION_R}",
+                "%{wks.location}/%{Libraries.NRI_VK_R}",
+                "%{wks.location}/%{Libraries.NRI_R}",
+                "%{wks.location}/%{Libraries.NRI_DLL_R}",
+                "%{wks.location}/%{Libraries.NRI_AMDAGS_DLL_R}",
             }
 
             postbuildcommands
             {
-                "{COPYFILE} %{wks.location}/%{Libraries.SDL3_DLL_R} %{wks.location}/GAME"
+                "{COPYFILE} %{wks.location}/%{Libraries.SDL3_DLL_R} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.NRI_DLL_R} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.NRI_AMDAGS_DLL_R} %{wks.location}/GAME"
             }
 
 -----------------------
@@ -155,7 +215,15 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.eventpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.glm}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+        }
+
+        defines
+        {
+            "GLM_ENABLE_EXPERIMENTAL"
         }
 
         links

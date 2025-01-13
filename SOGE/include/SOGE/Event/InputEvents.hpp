@@ -133,18 +133,18 @@ namespace soge
     class MouseMovedEvent : public StaticEvent<MouseMovedEvent>
     {
     private:
-        float m_relX;
-        float m_relY;
+        float m_xOffset;
+        float m_yOffset;
 
     public:
         static constexpr EventType GetStaticEventType() noexcept;
 
-        explicit MouseMovedEvent(float aRelX, float aRelY) noexcept;
+        explicit MouseMovedEvent(float aXOffset, float aYOffset) noexcept;
 
         [[nodiscard]]
-        float GetRelativeX() const;
+        float GetXOffset() const;
         [[nodiscard]]
-        float GetRelativeY() const;
+        float GetYOffset() const;
 
         [[nodiscard]]
         constexpr EventType GetEventType() const override

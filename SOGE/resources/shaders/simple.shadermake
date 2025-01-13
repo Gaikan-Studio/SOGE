@@ -1,0 +1,7 @@
+// https://github.com/NVIDIAGameWorks/ShaderMake?tab=readme-ov-file#config-file-structure
+
+// will be named "simple_VSMain"
+simple.hlsl -T vs -E VSMain
+
+// will be named "simple_PSMain"
+simple.hlsl -T ps -E PSMain
