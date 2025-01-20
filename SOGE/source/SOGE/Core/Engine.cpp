@@ -8,6 +8,8 @@
 #include "SOGE/Window/WindowModule.hpp"
 #include "SOGE/Sound/SoundModule.hpp"
 
+#include "SOGE/Scripting/ScriptingModule.hpp"
+
 #include <ranges>
 
 
@@ -69,6 +71,7 @@ namespace soge
         CreateModule<SoundModule>();
         CreateModule<WindowModule>();
         CreateModule<GraphicsModule>();
+        CreateModule<ScriptingModule>();
     }
 
     void Engine::Load(AccessTag)
@@ -121,8 +124,6 @@ namespace soge
             }
 
             GetModule<GraphicsModule>()->Update();
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(60));
         }
 
         Unload(AccessTag{});

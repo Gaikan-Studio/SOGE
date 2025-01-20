@@ -64,7 +64,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.MONO}"
         }
 
         defines
@@ -79,7 +80,8 @@ workspace "SOGE"
             "SOGE_GRAPHICS_IMPL=D3D12", -- D3D11/D3D12/VK
             "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_D3D12=dxil",
             "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_VK=spirv",
-            "SOGE_SOUND_IMPL=FMOD" -- FMOD/OAL
+            "SOGE_SOUND_IMPL=FMOD", -- FMOD/OAL
+            "SOGE_SCRIPTING_IMPL=Mono" -- MONO/ANGSCRIPT
         }
 
         links
@@ -95,14 +97,16 @@ workspace "SOGE"
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK_DLL}",
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK}",
             "%{wks.location}/%{Libraries.FMOD_WIN64_LIBFSVORBIS_DLL}",
-            "%{wks.location}/%{Libraries.FMOD_WIN64_OPUS_DLL}"
+            "%{wks.location}/%{Libraries.FMOD_WIN64_OPUS_DLL}",
+            "%{wks.location}/%{Libraries.MONO_SGEN}"
         }
 
         postbuildcommands
         {
             "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_FSBANK_DLL} %{wks.location}/GAME",
             "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_LIBFSVORBIS_DLL} %{wks.location}/GAME",
-            "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_OPUS_DLL} %{wks.location}/GAME"
+            "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_OPUS_DLL} %{wks.location}/GAME",
+            "{COPYFILE} %{wks.location}/%{Libraries.MONO_SGEN_DLL} %{wks.location}/GAME"
         }
 
         prebuildcommands
@@ -256,7 +260,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.MONO}"
         }
 
         defines

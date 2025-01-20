@@ -37,3 +37,6 @@
 [submodule "3rdparty/ShaderMake/ShaderMake"]
 	path = 3rdparty/ShaderMake/ShaderMake
 	url = https://github.com/NVIDIAGameWorks/ShaderMake.git
+[submodule "3rdparty/mono/mono"]
+	path = 3rdparty/mono/mono
+	url = https://github.com/GaikanStudio/MONO-Lib.git
