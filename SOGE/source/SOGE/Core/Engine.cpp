@@ -149,6 +149,11 @@ namespace soge
         aLayer->OnAttach();
     }
 
+    void Engine::HandleCLIArgs(int argc, char** argv)
+    {
+        m_cliManager.ParseArgs(argc, argv);
+    }
+
     void Engine::PushOverlay(Layer* aOverlayLayer)
     {
         m_renderLayers.PushOverlay(aOverlayLayer);

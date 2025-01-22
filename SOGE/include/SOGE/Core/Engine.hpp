@@ -5,6 +5,7 @@
 #include "SOGE/Core/ModuleManager.hpp"
 #include "SOGE/DI/Container.hpp"
 #include "SOGE/System/Memory.hpp"
+#include "SOGE/Core/CLIManager.hpp"
 
 
 namespace soge
@@ -41,6 +42,7 @@ namespace soge
 
         LayerStack m_renderLayers;
         bool m_isRunning;
+        CLIManager m_cliManager;
         std::atomic_bool m_shutdownRequested;
 
         di::Container m_container;
@@ -113,6 +115,9 @@ namespace soge
 
         void PushLayer(Layer* aLayer);
         void PushOverlay(Layer* aOverlayLayer);
+
+        void HandleCLIArgs(int argc, char** argv);
+
     };
 
     template <DerivedFromEngine T, typename... Args>

@@ -68,6 +68,7 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.Assimp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.stb}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.CLI11}"
         }
 
         defines
@@ -273,6 +274,7 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.CLI11}"
         }
 
         defines
@@ -317,7 +319,8 @@ workspace "SOGE"
 
 require "vstudio"
 
--- https://github.com/premake/premake-core/pull/2187
+-- Enable clang-tidy option in soultion, based on https://github.com/premake/premake-core/pull/2187
+-- Can be replaced with clangtidy("on") option after Premake5 beta 3 release.
 local function clangtidy(cfg)
     if _ACTION >= "vs2019" then
         premake.vstudio.vc2010.element("EnableClangTidyCodeAnalysis", nil, "true")

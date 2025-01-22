@@ -10,6 +10,9 @@
 [submodule "SOGE-UTEST"]
 	path = SOGE-UTEST
 	url = https://github.com/GaikanStudio/SOGE-UTEST.git
+[submodule "3rdparty/CLI11/CLI11"]
+	path = 3rdparty/CLI11/CLI11
+	url = https://github.com/CLIUtils/CLI11.git
 [submodule "3rdparty/eventpp/eventpp"]
 	path = 3rdparty/eventpp/eventpp
 	url = https://github.com/wqking/eventpp.git
