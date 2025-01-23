@@ -96,6 +96,7 @@ workspace "SOGE"
             "nvrhi_d3d12",
             "nvrhi_vk",
             "cppfs",
+            "flecs",
 
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK_DLL}",
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK}",

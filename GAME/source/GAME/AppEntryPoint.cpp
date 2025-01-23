@@ -16,7 +16,6 @@
 #include <SOGE/Graphics/Resources/SimpleTextureResource.hpp>
 #include <SOGE/Math/Camera.hpp>
 #include <SOGE/Window/WindowModule.hpp>
-#include <algorithm>
 
 #undef CreateWindow
 

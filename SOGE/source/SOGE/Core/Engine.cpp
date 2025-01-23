@@ -2,6 +2,7 @@
 
 #include "SOGE/Core/Engine.hpp"
 
+#include "SOGE/AI/AiModule.hpp"
 #include "SOGE/Core/Timestep.hpp"
 #include "SOGE/Event/EventModule.hpp"
 #include "SOGE/Graphics/GraphicsModule.hpp"
@@ -68,6 +69,7 @@ namespace soge
         CreateModule<SoundModule>();
         CreateModule<WindowModule>();
         CreateModule<GraphicsModule>();
+        CreateModule<AiModule>();
     }
 
     void Engine::Load(AccessTag)
@@ -114,6 +116,8 @@ namespace soge
             const auto eventModule = GetModule<EventModule>();
             eventModule->Enqueue<UpdateEvent>(Timestep::DeltaTime());
             eventModule->DispatchQueue<UpdateEvent>();
+
+            GetModule<AiModule>()->Update();
 
             for (const auto layer : m_renderLayers)
             {

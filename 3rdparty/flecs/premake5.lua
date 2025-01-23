@@ -24,6 +24,8 @@ project "flecs"
 
     defines
     {
+        "flecs_STATIC",
+        "flecs_EXPORTS",
         "FLECS_NO_LOG",
         "FLECS_NO_JSON",
         "FLECS_NO_HTTP",
