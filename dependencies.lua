@@ -17,6 +17,7 @@ IncludeThirdpartyDirs["NRI"] = "3rdparty/NRI/NRI/Include"
 IncludeThirdpartyDirs["NVRHI"] = "3rdparty/NVRHI/NVRHI/include"
 IncludeThirdpartyDirs["Assimp"] = "3rdparty/assimp/assimp/include"
 IncludeThirdpartyDirs["stb"] = "3rdparty/stb/stb"
+IncludeThirdpartyDirs["flecs"] = "3rdparty/flecs/flecs/include"
 
 -- Include libs
 Libraries = {}

@@ -24,6 +24,7 @@ workspace "SOGE"
         include "3rdparty/NVRHI/premake5.lua"
         include "3rdparty/ShaderMake/premake5.lua"
         include "3rdparty/Assimp/premake5.lua"
+        include "3rdparty/flecs/premake5.lua"
     group ""
 
     project "SOGE"
@@ -67,7 +68,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.Assimp}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.stb}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.stb}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.flecs}"
         }
 
         defines
