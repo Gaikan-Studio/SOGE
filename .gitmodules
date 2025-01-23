@@ -43,3 +43,6 @@
 [submodule "3rdparty/stb/stb"]
 	path = 3rdparty/stb/stb
 	url = https://github.com/nothings/stb.git
+[submodule "3rdparty/flecs/flecs"]
+	path = 3rdparty/flecs/flecs
+	url = https://github.com/SanderMertens/flecs
