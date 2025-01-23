@@ -96,7 +96,6 @@ workspace "SOGE"
             "nvrhi_d3d12",
             "nvrhi_vk",
             "cppfs",
-            "flecs",
 
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK_DLL}",
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK}",
@@ -172,7 +171,11 @@ workspace "SOGE"
 
                 -- Assimp
                 "%{wks.location}/%{Libraries.ASSIMP_D}",
-                "%{wks.location}/%{Libraries.ASSIMP_DLL_D}"
+                "%{wks.location}/%{Libraries.ASSIMP_DLL_D}",
+
+                -- Flecs
+                "%{wks.location}/%{Libraries.FLECS_D}",
+                "%{wks.location}/%{Libraries.FLECS_DLL_D}"
             }
 
             postbuildcommands
@@ -183,7 +186,8 @@ workspace "SOGE"
                 "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_CORE_DLL_D} %{wks.location}/GAME",
                 "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_CORE_DLL_R} %{wks.location}/GAME", -- For FMOD Studio 
                 "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_STUDIO_DLL_D} %{wks.location}/GAME",
-                "{COPYFILE} %{wks.location}/%{Libraries.ASSIMP_DLL_D} %{wks.location}/GAME"
+                "{COPYFILE} %{wks.location}/%{Libraries.ASSIMP_DLL_D} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.FLECS_DLL_D} %{wks.location}/GAME"
             }
 
         filter "configurations:Release"
@@ -220,7 +224,11 @@ workspace "SOGE"
 
                 -- Assimp
                 "%{wks.location}/%{Libraries.ASSIMP_R}",
-                "%{wks.location}/%{Libraries.ASSIMP_DLL_R}"
+                "%{wks.location}/%{Libraries.ASSIMP_DLL_R}",
+
+                -- Flecs
+                "%{wks.location}/%{Libraries.FLECS_R}",
+                "%{wks.location}/%{Libraries.FLECS_DLL_R}"
             }
 
             postbuildcommands
@@ -230,7 +238,8 @@ workspace "SOGE"
                 "{COPYFILE} %{wks.location}/%{Libraries.NRI_AMDAGS_DLL_R} %{wks.location}/GAME",
                 "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_CORE_DLL_R} %{wks.location}/GAME",
                 "{COPYFILE} %{wks.location}/%{Libraries.FMOD_WIN64_STUDIO_DLL_R} %{wks.location}/GAME",
-                "{COPYFILE} %{wks.location}/%{Libraries.ASSIMP_DLL_R} %{wks.location}/GAME"
+                "{COPYFILE} %{wks.location}/%{Libraries.ASSIMP_DLL_R} %{wks.location}/GAME",
+                "{COPYFILE} %{wks.location}/%{Libraries.FLECS_DLL_R} %{wks.location}/GAME"
             }
 
 -----------------------
@@ -275,7 +284,10 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.Assimp}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.stb}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.flecs}"
         }
 
         defines

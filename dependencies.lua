@@ -81,3 +81,11 @@ Libraries["ASSIMP_DLL_D"] = "3rdparty/assimp/bin/Debug/assimp-vc143-mtd.dll"
 
 Libraries["ASSIMP_R"] = "3rdparty/assimp/lib/Release/assimp-vc143-mt.lib"
 Libraries["ASSIMP_DLL_R"] = "3rdparty/assimp/bin/Release/assimp-vc143-mt.dll"
+
+-- Flecs
+
+Libraries["FLECS_D"] = "3rdparty/flecs/lib/Debug/flecs.lib"
+Libraries["FLECS_DLL_D"] = "3rdparty/flecs/lib/Debug/flecs.dll"
+
+Libraries["FLECS_R"] = "3rdparty/flecs/lib/Release/flecs.lib"
+Libraries["FLECS_DLL_R"] = "3rdparty/flecs/lib/Release/flecs.dll"

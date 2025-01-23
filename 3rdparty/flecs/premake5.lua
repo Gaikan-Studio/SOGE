@@ -1,50 +1,17 @@
 print(os.date() .. " Prepare flecs submodule...")
+print(os.date() .. " Building flecs with CMake...")
 
-project "flecs"
-    kind "StaticLib"
-    language "C"
-    cdialect "C99"
-    location "./"
-    staticruntime "on"
+module = "flecs"
+if not isdir("./lib") then
+    cmake = "cmake"
+    os.execute("{MKDIR} lib")
 
-    targetdir("lib/bin/" .. buildpattern .. "/%{prj.name}")
-    objdir("lib/int/" .. buildpattern .. "/%{prj.name}")
+    os.execute(cmake .. " -S ./" .. module .. " -B ./" .. module .. "/auto_build")
 
-    files
-    {
-        "./flecs/include/**.h",
-        "./flecs/include/**.hpp",
-        "./flecs/src/*.c"
-    }
+    print("BUILD DEBUG VERSION OF" .. module)
+    os.execute(cmake .. " --build ./" .. module .. "/auto_build --config Debug")
+    os.execute(cmake .. " --build ./" .. module .. "/auto_build --config Release")
 
-    includedirs
-    {
-        "./flecs/include"
-    }
-
-    defines
-    {
-        "flecs_STATIC",
-        "flecs_EXPORTS",
-        "FLECS_NO_LOG",
-        "FLECS_NO_JSON",
-        "FLECS_NO_HTTP",
-        "FLECS_NO_REST",
-        "FLECS_NO_LOG",
-        "FLECS_NO_JOURNAL",
-        "FLECS_NO_APP",
-        "FLECS_NO_OS_API_IMPL",
-        "_CRT_SECURE_NO_WARNINGS",
-        "_SCL_SECURE_NO_WARNINGS"
-    }
-
-    filter "toolset:gcc or clang"
-        cdialect "gnu99"
-
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "on"
+    os.execute("{MOVE} ./" .. module .. "/auto_build/Debug ./lib")
+    os.execute("{MOVE} ./" .. module .. "/auto_build/Release ./lib")
+end
