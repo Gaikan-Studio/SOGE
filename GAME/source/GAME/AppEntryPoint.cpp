@@ -73,9 +73,9 @@ namespace soge_game
             struct ConsiderationTag
             {
             };
-            flecs::entity agentHasAction = world.entity();
-            flecs::entity actionBestAction = world.entity();
-            flecs::entity actionHasConsideration = world.entity();
+            const flecs::entity agentHasAction = world.entity("Agent has action relation");
+            const flecs::entity agentBestAction = world.entity("Agent best action relation");
+            const flecs::entity actionHasConsideration = world.entity("Action has consideration relation");
 
             struct Consideration
             {
@@ -86,31 +86,31 @@ namespace soge_game
             {
                 float m_thirst{};
             };
-            flecs::entity agent = world.entity("Thirsty agent").add<AgentTag>().set(Thirst{.m_thirst = 1.0f});
+            const flecs::entity agent = world.entity("Thirsty agent").add<AgentTag>().set(Thirst{.m_thirst = 1.0f});
 
             struct DrinkAction
             {
             };
-            flecs::entity drinkAction = world.entity("Drink water action").add<ActionTag>().add<DrinkAction>();
+            const flecs::entity drinkAction = world.entity("Drink water action").add<ActionTag>().add<DrinkAction>();
 
             (void)agent.add(agentHasAction, drinkAction);
 
             struct ThirstConsideration
             {
             };
-            flecs::entity thirstConsideration = world.entity("Thirst consideration")
-                                                    .add<ConsiderationTag>()
-                                                    .set(Consideration{.m_score = 0.01f})
-                                                    .add<ThirstConsideration>();
+            const flecs::entity thirstConsideration = world.entity("Thirst consideration")
+                                                          .add<ConsiderationTag>()
+                                                          .set(Consideration{.m_score = 0.01f})
+                                                          .add<ThirstConsideration>();
 
             (void)drinkAction.add(actionHasConsideration, thirstConsideration);
 
             world.system<AgentTag>("Pick the best action for agent")
-                .kind(flecs::PostUpdate)
+                .kind(flecs::OnUpdate)
                 .with(agentHasAction, flecs::Wildcard)
-                .each([agentHasAction, actionBestAction, actionHasConsideration](const flecs::entity aAgent, AgentTag) {
+                .each([agentHasAction, agentBestAction, actionHasConsideration](const flecs::entity aAgent, AgentTag) {
                     SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
-                    (void)aAgent.remove(actionBestAction, flecs::Wildcard);
+                    (void)aAgent.remove(agentBestAction, flecs::Wildcard);
 
                     std::int32_t index{};
                     flecs::entity bestAction;
@@ -132,11 +132,21 @@ namespace soge_game
                         }
                     }
 
-                    if (bestAction)
+                    if (!bestAction)
+                    {
+                        return;
+                    }
+                    (void)aAgent.add(agentBestAction, bestAction);
+                });
+
+            world.system<AgentTag>("Print the best action for agent")
+                .kind(flecs::OnUpdate)
+                // .with(agentBestAction, flecs::Wildcard)
+                .each([agentBestAction](const flecs::entity aAgent, AgentTag) {
+                    if (const flecs::entity bestAction = aAgent.target(agentBestAction))
                     {
                         SOGE_INFO_LOG(R"([PICK] Best action for agent "{}" is "{}")", aAgent.name().c_str(),
                                       bestAction.name().c_str());
-                        (void)aAgent.add(actionBestAction, bestAction);
                     }
                     else
                     {
