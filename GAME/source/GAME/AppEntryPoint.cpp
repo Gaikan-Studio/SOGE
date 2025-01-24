@@ -94,21 +94,37 @@ namespace soge_game
             };
             const flecs::entity drinkAction = world.entity("Drink water action").add<ActionTag>().add<DrinkAction>();
 
-            (void)agent.add(agentHasAction, drinkAction);
-
-            struct ThirstConsideration
+            struct RunAction
             {
             };
-            const flecs::entity thirstConsideration = world.entity("Thirst consideration")
-                                                          .add<ConsiderationTag>()
-                                                          .set(Consideration{.m_score = 0.01f})
-                                                          .add<ThirstConsideration>();
+            const flecs::entity runAction = world.entity("Run action").add<ActionTag>().add<RunAction>();
 
-            (void)drinkAction.add(actionHasConsideration, thirstConsideration);
+            (void)agent.add(agentHasAction, drinkAction);
+            (void)agent.add(agentHasAction, runAction);
+
+            struct DrinkConsideration
+            {
+            };
+            const flecs::entity drinkConsideration = world.entity("Drink consideration")
+                                                         .add<ConsiderationTag>()
+                                                         .set(Consideration{.m_score = 0.01f})
+                                                         .add<DrinkConsideration>();
+
+            (void)drinkAction.add(actionHasConsideration, drinkConsideration);
+
+            struct RunConsideration
+            {
+            };
+            const flecs::entity runConsideration = world.entity("Run consideration")
+                                                       .add<ConsiderationTag>()
+                                                       .set(Consideration{.m_score = 0.02f})
+                                                       .add<RunConsideration>();
+
+            (void)runAction.add(actionHasConsideration, runConsideration);
 
             world.system<AgentTag>("Pick the best action for agent")
                 .kind(flecs::OnUpdate)
-                .with(agentHasAction, flecs::Wildcard)
+                .with(agentHasAction, flecs::Any)
                 .each([=](const flecs::entity aAgent, AgentTag) {
                     SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
                     (void)aAgent.remove(agentBestAction, flecs::Wildcard);
@@ -150,19 +166,27 @@ namespace soge_game
                 .each([agentBestAction](const flecs::entity aAgent, AgentTag) {
                     if (const flecs::entity bestAction = aAgent.target(agentBestAction))
                     {
-                        SOGE_INFO_LOG(R"([PICK] Best action for agent "{}" is "{}")", aAgent.name().c_str(),
+                        SOGE_INFO_LOG(R"([PICKED] Best action for agent "{}" is "{}")", aAgent.name().c_str(),
                                       bestAction.name().c_str());
                     }
                     else
                     {
-                        SOGE_INFO_LOG(R"([PICK] No best action for agent "{}")", aAgent.name().c_str());
+                        SOGE_INFO_LOG(R"([PICKED] No best action for agent "{}")", aAgent.name().c_str());
                     }
                 });
 
             world.system<DrinkAction>("Drink action")
                 .kind(flecs::PostUpdate)
                 .with(actionBestForAgent, flecs::Wildcard)
-                .each([](DrinkAction) { SOGE_INFO_LOG("[ACT] Drinking some water..."); });
+                .each([/*actionBestForAgent*/](/*const flecs::entity aAction, */ DrinkAction) {
+                    SOGE_INFO_LOG("[ACT] Drinking some water...");
+                    // const flecs::entity actionAgent = aAction.target(actionBestForAgent);
+                    // auto& [thirst] = *actionAgent.get_mut<Thirst>();
+                    //
+                    // const auto prevThirst = thirst;
+                    // thirst = glm::max(prevThirst - 0.1f, 0.0f);
+                    // SOGE_INFO_LOG("[ACT] Drinking some water... thirst was {}, but now is {}", prevThirst, thirst);
+                });
         }
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
