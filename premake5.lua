@@ -67,7 +67,7 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.Assimp}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.stb}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.stb}",
             "%{wks.location}/%{IncludeThirdpartyDirs.CLI11}"
         }
 
@@ -273,7 +273,7 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.CLI11}"
         }
 

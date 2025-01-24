@@ -17,6 +17,13 @@ namespace soge
         m_cliApp.release();
     }
 
+    void CLIManager::InitCLI()
+    {
+        auto hello = m_cliApp->add_subcommand("hello", "just say hello");
+        bool verbose = false;
+        hello->add_flag("-n,--name", verbose, "Enable verbose");
+    }
+
     void CLIManager::ParseArgs(int argc, char** argv)
     {
         argv = m_cliApp->ensure_utf8(argv);

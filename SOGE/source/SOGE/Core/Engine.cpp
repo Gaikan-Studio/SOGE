@@ -62,6 +62,7 @@ namespace soge
     Engine::Engine([[maybe_unused]] AccessTag&& aTag) : m_isRunning(false), m_shutdownRequested(false)
     {
         SOGE_INFO_LOG("Initialize engine...");
+        m_cliManager.InitCLI();
 
         CreateModule<EventModule>();
         CreateModule<InputModule>();

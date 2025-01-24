@@ -24,6 +24,7 @@ namespace soge
         Logger::Init();
 
         const auto app = CreateApplication();
+        app->HandleCLIArgs(args.size(), args.data());
         app->Run();
 
         return EXIT_SUCCESS;
@@ -90,7 +91,6 @@ inline bool soge::ConsoleInit(std::span<char*> args)
 inline int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd)
 {
     using namespace soge;
-
     const std::span args{__argv, static_cast<std::size_t>(__argc)};
     return Launch(args);
 }

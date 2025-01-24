@@ -7,7 +7,6 @@ namespace CLI
     class App;
 }
 
-
 namespace soge
 {
     class CLIManager
@@ -15,10 +14,12 @@ namespace soge
     private:
         eastl::unique_ptr<CLI::App> m_cliApp;
 
+
     public:
         CLIManager();
         ~CLIManager();
 
+        void InitCLI();
         void ParseArgs(int argc, char** argv);
 
     };
