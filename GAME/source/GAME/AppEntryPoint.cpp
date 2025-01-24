@@ -46,23 +46,103 @@ namespace soge_game
         const auto graphicsModule = GetModule<soge::GraphicsModule>();
         const auto soundModule = GetModule<soge::SoundModule>();
 
+        flecs::world world;
         {
-            const auto aiModule = GetModule<soge::AiModule>();
+            // const auto aiModule = GetModule<soge::AiModule>();
+            //
+            // struct Thirst
+            // {
+            //     float m_thirst{};
+            // };
+            //
+            // const auto aiAgent = aiModule->CreateAgent("Test agent");
+            // SOGE_INFO_LOG(R"(Created AI agent with name of "{}")", aiAgent.GetName().data());
+            // aiAgent.GetEntity().set(Thirst{.m_thirst = 1.0f});
+            //
+            // auto drinkAction = aiModule->CreateAction<Thirst>("Drink some water", [](Thirst& aThirst) {
+            //     const auto prevThirst = aThirst.m_thirst;
+            //     aThirst.m_thirst = glm::max(prevThirst - 0.1f, 0.0f);
+            //     SOGE_INFO_LOG("Drinking some water... thirst was {}, but now is {}", prevThirst, aThirst.m_thirst);
+            // });
+            struct AgentTag
+            {
+            };
+            struct ActionTag
+            {
+            };
+            struct ConsiderationTag
+            {
+            };
+            flecs::entity agentHasAction = world.entity();
+            flecs::entity actionBestAction = world.entity();
+            flecs::entity actionHasConsideration = world.entity();
+
+            struct Consideration
+            {
+                float m_score{};
+            };
 
             struct Thirst
             {
                 float m_thirst{};
             };
+            flecs::entity agent = world.entity("Thirsty agent").add<AgentTag>().set(Thirst{.m_thirst = 1.0f});
 
-            const auto aiAgent = aiModule->CreateAgent("Test agent");
-            SOGE_INFO_LOG(R"(Created AI agent with name of "{}")", aiAgent.GetName().data());
-            aiAgent.GetEntity().set(Thirst{.m_thirst = 1.0f});
+            struct DrinkAction
+            {
+            };
+            flecs::entity drinkAction = world.entity("Drink water action").add<ActionTag>().add<DrinkAction>();
 
-            auto drinkAction = aiModule->CreateAction<Thirst>("Drink some water", [](Thirst& aThirst) {
-                const auto prevThirst = aThirst.m_thirst;
-                aThirst.m_thirst = glm::max(prevThirst - 0.1f, 0.0f);
-                SOGE_INFO_LOG("Drinking some water... thirst was {}, but now is {}", prevThirst, aThirst.m_thirst);
-            });
+            (void)agent.add(agentHasAction, drinkAction);
+
+            struct ThirstConsideration
+            {
+            };
+            flecs::entity thirstConsideration = world.entity("Thirst consideration")
+                                                    .add<ConsiderationTag>()
+                                                    .set(Consideration{.m_score = 0.01f})
+                                                    .add<ThirstConsideration>();
+
+            (void)drinkAction.add(actionHasConsideration, thirstConsideration);
+
+            world.system<AgentTag>("Pick the best action for agent")
+                .kind(flecs::PostUpdate)
+                .with(agentHasAction, flecs::Wildcard)
+                .each([agentHasAction, actionBestAction, actionHasConsideration](const flecs::entity aAgent, AgentTag) {
+                    SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
+                    (void)aAgent.remove(actionBestAction, flecs::Wildcard);
+
+                    std::int32_t index{};
+                    flecs::entity bestAction;
+                    decltype(Consideration::m_score) bestScore{};
+                    while (flecs::entity action = aAgent.target(agentHasAction, index++))
+                    {
+                        SOGE_INFO_LOG(R"([PICK] Action name is "{}")", action.name().c_str());
+                        if (flecs::entity consideration = action.target_for<Consideration>(actionHasConsideration))
+                        {
+                            const auto considerationData = consideration.get<Consideration>();
+                            const float score = considerationData->m_score;
+                            SOGE_INFO_LOG(R"([PICK] Consideration "{}" score is {})", consideration.name().c_str(),
+                                          score);
+                            if (score > bestScore)
+                            {
+                                bestScore = score;
+                                bestAction = action;
+                            }
+                        }
+                    }
+
+                    if (bestAction)
+                    {
+                        SOGE_INFO_LOG(R"([PICK] Best action for agent "{}" is "{}")", aAgent.name().c_str(),
+                                      bestAction.name().c_str());
+                        (void)aAgent.add(actionBestAction, bestAction);
+                    }
+                    else
+                    {
+                        SOGE_INFO_LOG(R"([PICK] No best action for agent "{}")", aAgent.name().c_str());
+                    }
+                });
         }
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
@@ -306,6 +386,8 @@ namespace soge_game
             *cameraMouseDeltaY = 0.0f;
             *lightMouseDeltaX = 0.0f;
             *lightMouseDeltaY = 0.0f;
+
+            (void)world.progress(aEvent.GetDeltaTime());
         };
         eventModule->PushBack<soge::UpdateEvent>(update);
     }
