@@ -103,6 +103,26 @@ namespace soge_game
             (void)runAction.add(actionToConsideration, runConsideration);
             (void)runConsideration.add(considerationToAction, runAction);
 
+            const flecs::entity agent2 = world.entity("Thirsty agent 2").add<Agent>().set(Thirst{.m_thirst = 0.75f});
+
+            const flecs::entity drinkAction2 = world.entity("Drink water action 2").add<Action>().add<DrinkAction>();
+            (void)agent2.add(agentToAction, drinkAction2);
+            (void)drinkAction2.add(actionToAgent, agent2);
+
+            const flecs::entity drinkConsideration2 =
+                world.entity("Drink consideration 2").set(Consideration{}).add<DrinkConsideration>();
+            (void)drinkAction2.add(actionToConsideration, drinkConsideration2);
+            (void)drinkConsideration2.add(considerationToAction, drinkAction2);
+
+            const flecs::entity runAction2 = world.entity("Run action 2").add<Action>().add<RunAction>();
+            (void)agent2.add(agentToAction, runAction2);
+            (void)runAction2.add(actionToAgent, agent2);
+
+            const flecs::entity runConsideration2 =
+                world.entity("Run consideration 2").set(Consideration{}).add<RunConsideration>();
+            (void)runAction2.add(actionToConsideration, runConsideration2);
+            (void)runConsideration2.add(considerationToAction, runAction2);
+
             world.system<DrinkConsideration, Consideration>("Update drink consideration")
                 .kind(flecs::PreUpdate)
                 .with(considerationToAction, flecs::Wildcard)
@@ -133,6 +153,7 @@ namespace soge_game
 
             world.system<Agent>("Pick the best action for agent")
                 .kind(flecs::OnUpdate)
+                .immediate()
                 .with(agentToAction, flecs::Any)
                 .each([=](const flecs::entity aAgent, Agent) {
                     SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
@@ -192,7 +213,8 @@ namespace soge_game
 
                     const auto prevThirst = thirst;
                     thirst = glm::max(prevThirst - 0.15f, 0.0f);
-                    SOGE_INFO_LOG("[ACT] Drinking some water... thirst was {}, but now is {}", prevThirst, thirst);
+                    SOGE_INFO_LOG(R"([ACT] "{}" is drinking some water... thirst was {}, but now is {})",
+                                  agent.name().c_str(), prevThirst, thirst);
                 });
 
             world.system<RunAction>("Perform run action")
@@ -204,7 +226,8 @@ namespace soge_game
 
                     const auto prevThirst = thirst;
                     thirst = glm::min(prevThirst + 0.1f, 1.0f);
-                    SOGE_INFO_LOG("[ACT] Running somewhere... thirst was {}, but now is {}", prevThirst, thirst);
+                    SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
+                                  agent.name().c_str(), prevThirst, thirst);
                 });
         }
 
