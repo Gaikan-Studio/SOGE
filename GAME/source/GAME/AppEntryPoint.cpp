@@ -45,189 +45,124 @@ namespace soge_game
         const auto windowModule = GetModule<soge::WindowModule>();
         const auto graphicsModule = GetModule<soge::GraphicsModule>();
         const auto soundModule = GetModule<soge::SoundModule>();
+        const auto aiModule = GetModule<soge::AiModule>();
 
-        flecs::world world;
         {
-            struct Agent
-            {
-            };
-            struct Action
-            {
-            };
-            struct Consideration
-            {
-                float m_score{};
-            };
-            const flecs::entity agentToAction = world.entity("Agent to action relation");
-            const flecs::entity actionToAgent = world.entity("Action to agent relation");
-
-            const flecs::entity agentToBestAction = world.entity("Agent to best action relation");
-            const flecs::entity bestActionToAgent = world.entity("Best action to agent relation");
-
-            const flecs::entity actionToConsideration = world.entity("Action to consideration relation");
-            const flecs::entity considerationToAction = world.entity("Consideration to action relation");
+            using Consideration = soge::AiModule::Consideration;
 
             struct Thirst
             {
                 float m_thirst{};
             };
-            const flecs::entity agent = world.entity("Thirsty agent").add<Agent>().set(Thirst{.m_thirst = 0.25f});
 
             struct DrinkAction
             {
             };
-            const flecs::entity drinkAction = world.entity("Drink water action").add<Action>().add<DrinkAction>();
-            (void)agent.add(agentToAction, drinkAction);
-            (void)drinkAction.add(actionToAgent, agent);
-
-            struct DrinkConsideration
-            {
-            };
-            const flecs::entity drinkConsideration =
-                world.entity("Drink consideration").set(Consideration{}).add<DrinkConsideration>();
-            (void)drinkAction.add(actionToConsideration, drinkConsideration);
-            (void)drinkConsideration.add(considerationToAction, drinkAction);
 
             struct RunAction
             {
             };
-            const flecs::entity runAction = world.entity("Run action").add<Action>().add<RunAction>();
-            (void)agent.add(agentToAction, runAction);
-            (void)runAction.add(actionToAgent, agent);
+
+            struct DrinkConsideration
+            {
+            };
 
             struct RunConsideration
             {
             };
-            const flecs::entity runConsideration =
-                world.entity("Run consideration").set(Consideration{}).add<RunConsideration>();
-            (void)runAction.add(actionToConsideration, runConsideration);
-            (void)runConsideration.add(considerationToAction, runAction);
 
-            const flecs::entity agent2 = world.entity("Thirsty agent 2").add<Agent>().set(Thirst{.m_thirst = 0.75f});
+            auto agent = aiModule->CreateAgent("Thirsty agent");
+            agent.GetEntity().set(Thirst{.m_thirst = 0.25f});
 
-            const flecs::entity drinkAction2 = world.entity("Drink water action 2").add<Action>().add<DrinkAction>();
-            (void)agent2.add(agentToAction, drinkAction2);
-            (void)drinkAction2.add(actionToAgent, agent2);
+            auto drinkAction = aiModule->CreateAction("Drink water action");
+            (void)drinkAction.GetEntity().add<DrinkAction>();
 
-            const flecs::entity drinkConsideration2 =
-                world.entity("Drink consideration 2").set(Consideration{}).add<DrinkConsideration>();
-            (void)drinkAction2.add(actionToConsideration, drinkConsideration2);
-            (void)drinkConsideration2.add(considerationToAction, drinkAction2);
+            aiModule->AttachActionToAgent(drinkAction, agent);
 
-            const flecs::entity runAction2 = world.entity("Run action 2").add<Action>().add<RunAction>();
-            (void)agent2.add(agentToAction, runAction2);
-            (void)runAction2.add(actionToAgent, agent2);
+            auto drinkConsideration = aiModule->CreateConsideration("Drink consideration");
+            (void)drinkConsideration.GetEntity().add<DrinkConsideration>();
 
-            const flecs::entity runConsideration2 =
-                world.entity("Run consideration 2").set(Consideration{}).add<RunConsideration>();
-            (void)runAction2.add(actionToConsideration, runConsideration2);
-            (void)runConsideration2.add(considerationToAction, runAction2);
+            aiModule->AttachConsiderationToAction(drinkConsideration, drinkAction);
 
-            world.system<DrinkConsideration, Consideration>("Update drink consideration")
-                .kind(flecs::PreUpdate)
-                .with(considerationToAction, flecs::Wildcard)
-                .each([considerationToAction, actionToAgent](const flecs::entity aConsideration, DrinkConsideration,
-                                                             Consideration& aConsiderationData) {
-                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", aConsideration.name().c_str());
+            auto runAction = aiModule->CreateAction("Run action");
+            (void)runAction.GetEntity().add<RunAction>();
 
-                    const flecs::entity action = aConsideration.target(considerationToAction);
-                    const flecs::entity agent = action.target_for<Thirst>(actionToAgent);
+            aiModule->AttachActionToAgent(runAction, agent);
 
-                    const auto& [thirst] = *agent.get<Thirst>();
-                    aConsiderationData.m_score = thirst;
+            auto runConsideration = aiModule->CreateConsideration("Run consideration");
+            (void)runConsideration.GetEntity().add<RunConsideration>();
+
+            aiModule->AttachConsiderationToAction(runConsideration, runAction);
+
+            auto agent2 = aiModule->CreateAgent("Thirsty agent 2");
+            agent2.GetEntity().set(Thirst{.m_thirst = 0.75f});
+
+            auto drinkAction2 = aiModule->CreateAction("Drink water action 2");
+            (void)drinkAction2.GetEntity().add<DrinkAction>();
+
+            aiModule->AttachActionToAgent(drinkAction2, agent2);
+
+            auto drinkConsideration2 = aiModule->CreateConsideration("Drink consideration 2");
+            (void)drinkConsideration2.GetEntity().add<DrinkConsideration>();
+
+            aiModule->AttachConsiderationToAction(drinkConsideration2, drinkAction2);
+
+            auto runAction2 = aiModule->CreateAction("Run action 2");
+            (void)runAction2.GetEntity().add<RunAction>();
+
+            aiModule->AttachActionToAgent(runAction2, agent2);
+
+            auto runConsideration2 = aiModule->CreateConsideration("Run consideration 2");
+            (void)runConsideration2.GetEntity().add<RunConsideration>();
+
+            aiModule->AttachConsiderationToAction(runConsideration2, runAction2);
+
+            aiModule->CreateConsiderationSystem<DrinkConsideration>("Update drink consideration")
+                .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, DrinkConsideration) {
+                    auto consideration = aiModule->GetConsideration(aEntity);
+                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
+
+                    auto action = aiModule->GetAttachedAction(*consideration);
+                    auto agent = aiModule->GetAttachedAgent(*action);
+
+                    const auto& [thirst] = *agent->GetEntity().get<Thirst>();
+                    aConsideration.m_score = thirst;
                 });
 
-            world.system<RunConsideration, Consideration>("Update run consideration")
-                .kind(flecs::PreUpdate)
-                .with(considerationToAction, flecs::Wildcard)
-                .each([considerationToAction, actionToAgent](const flecs::entity aConsideration, RunConsideration,
-                                                             Consideration& aConsiderationData) {
-                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", aConsideration.name().c_str());
+            aiModule->CreateConsiderationSystem<RunConsideration>("Update run consideration")
+                .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, RunConsideration) {
+                    auto consideration = aiModule->GetConsideration(aEntity);
+                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
 
-                    const flecs::entity action = aConsideration.target(considerationToAction);
-                    const flecs::entity agent = action.target_for<Thirst>(actionToAgent);
+                    auto action = aiModule->GetAttachedAction(*consideration);
+                    auto agent = aiModule->GetAttachedAgent(*action);
 
-                    const auto& [thirst] = *agent.get<Thirst>();
-                    aConsiderationData.m_score = 1.0f - thirst;
+                    const auto& [thirst] = *agent->GetEntity().get<Thirst>();
+                    aConsideration.m_score = 1.0f - thirst;
                 });
 
-            world.system<Agent>("Pick the best action for agent")
-                .kind(flecs::OnUpdate)
-                .immediate()
-                .with(agentToAction, flecs::Any)
-                .each([=](const flecs::entity aAgent, Agent) {
-                    SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
-                    (void)aAgent.remove(agentToBestAction, flecs::Wildcard);
+            aiModule->CreateActionSystem<DrinkAction>("Perform drink action")
+                .each([aiModule](const flecs::entity aAction, DrinkAction) {
+                    auto action = aiModule->GetAction(aAction);
+                    auto agent = aiModule->GetAgentFromBest(*action);
 
-                    flecs::entity bestAction;
-                    decltype(Consideration::m_score) bestScore{};
-
-                    std::int32_t index{};
-                    while (flecs::entity action = aAgent.target(agentToAction, index++))
-                    {
-                        SOGE_INFO_LOG(R"([PICK] Action name is "{}")", action.name().c_str());
-                        (void)action.remove(bestActionToAgent, flecs::Wildcard);
-
-                        if (flecs::entity consideration = action.target_for<Consideration>(actionToConsideration))
-                        {
-                            const auto& [score] = *consideration.get<Consideration>();
-                            SOGE_INFO_LOG(R"([PICK] Consideration "{}" score is {})", consideration.name().c_str(),
-                                          score);
-                            if (score > bestScore)
-                            {
-                                bestScore = score;
-                                bestAction = action;
-                            }
-                        }
-                    }
-
-                    if (!bestAction)
-                    {
-                        return;
-                    }
-                    (void)aAgent.add(agentToBestAction, bestAction);
-                    (void)bestAction.add(bestActionToAgent, aAgent);
-                });
-
-            world.system<Agent>("Print the best action for agent")
-                .kind(flecs::OnUpdate)
-                // .with(agentBestAction, flecs::Wildcard)
-                .each([agentToBestAction](const flecs::entity aAgent, Agent) {
-                    if (const flecs::entity bestAction = aAgent.target(agentToBestAction))
-                    {
-                        SOGE_INFO_LOG(R"([PICKED] Best action for agent "{}" is "{}")", aAgent.name().c_str(),
-                                      bestAction.name().c_str());
-                    }
-                    else
-                    {
-                        SOGE_INFO_LOG(R"([PICKED] No best action for agent "{}")", aAgent.name().c_str());
-                    }
-                });
-
-            world.system<DrinkAction>("Perform drink action")
-                .kind(flecs::PostUpdate)
-                .with(bestActionToAgent, flecs::Wildcard)
-                .each([bestActionToAgent](const flecs::entity aAction, DrinkAction) {
-                    const flecs::entity agent = aAction.target(bestActionToAgent);
-                    auto& [thirst] = *agent.get_mut<Thirst>();
-
+                    auto& [thirst] = *agent->GetEntity().get_mut<Thirst>();
                     const auto prevThirst = thirst;
                     thirst = glm::max(prevThirst - 0.15f, 0.0f);
                     SOGE_INFO_LOG(R"([ACT] "{}" is drinking some water... thirst was {}, but now is {})",
-                                  agent.name().c_str(), prevThirst, thirst);
+                                  agent->GetName().data(), prevThirst, thirst);
                 });
 
-            world.system<RunAction>("Perform run action")
-                .kind(flecs::PostUpdate)
-                .with(bestActionToAgent, flecs::Wildcard)
-                .each([bestActionToAgent](const flecs::entity aAction, RunAction) {
-                    const flecs::entity agent = aAction.target(bestActionToAgent);
-                    auto& [thirst] = *agent.get_mut<Thirst>();
+            aiModule->CreateActionSystem<RunAction>("Perform run action")
+                .each([aiModule](const flecs::entity aAction, RunAction) {
+                    auto action = aiModule->GetAction(aAction);
+                    auto agent = aiModule->GetAgentFromBest(*action);
 
+                    auto& [thirst] = *agent->GetEntity().get_mut<Thirst>();
                     const auto prevThirst = thirst;
                     thirst = glm::min(prevThirst + 0.1f, 1.0f);
                     SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
-                                  agent.name().c_str(), prevThirst, thirst);
+                                  agent->GetName().data(), prevThirst, thirst);
                 });
         }
 
@@ -472,8 +407,6 @@ namespace soge_game
             *cameraMouseDeltaY = 0.0f;
             *lightMouseDeltaX = 0.0f;
             *lightMouseDeltaY = 0.0f;
-
-            (void)world.progress(aEvent.GetDeltaTime());
         };
         eventModule->PushBack<soge::UpdateEvent>(update);
     }
