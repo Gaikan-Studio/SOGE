@@ -279,10 +279,13 @@ namespace soge_game
             cameraPitch += *cameraMouseDeltaY * cameraSensitivity;
             camera.m_transform.m_rotation = glm::vec3{cameraPitch, cameraYaw, 0.0f};
 
-            lightYaw += *lightMouseDeltaX * cameraSensitivity;
-            lightPitch += *lightMouseDeltaY * cameraSensitivity;
-            directionalLightEntity1.GetDirection() =
-                soge::Transform{.m_rotation = glm::vec3{lightPitch, lightYaw, 0.0f}}.Forward();
+            if (*lightMouseDeltaX != 0.0f || *lightMouseDeltaY != 0.0f)
+            {
+                lightYaw += *lightMouseDeltaX * cameraSensitivity;
+                lightPitch += *lightMouseDeltaY * cameraSensitivity;
+                directionalLightEntity1.GetDirection() =
+                    soge::Transform{.m_rotation = glm::vec3{lightPitch, lightYaw, 0.0f}}.Forward();
+            }
 
             *cameraMouseDeltaX = 0.0f;
             *cameraMouseDeltaY = 0.0f;
