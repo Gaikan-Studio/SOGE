@@ -75,6 +75,7 @@ namespace soge_game
             };
             const flecs::entity agentHasAction = world.entity("Agent has action relation");
             const flecs::entity agentBestAction = world.entity("Agent best action relation");
+            const flecs::entity actionBestForAgent = world.entity("Action best for agent relation");
             const flecs::entity actionHasConsideration = world.entity("Action has consideration relation");
 
             struct Consideration
@@ -108,16 +109,19 @@ namespace soge_game
             world.system<AgentTag>("Pick the best action for agent")
                 .kind(flecs::OnUpdate)
                 .with(agentHasAction, flecs::Wildcard)
-                .each([agentHasAction, agentBestAction, actionHasConsideration](const flecs::entity aAgent, AgentTag) {
+                .each([=](const flecs::entity aAgent, AgentTag) {
                     SOGE_INFO_LOG(R"([PICK] Agent name is "{}")", aAgent.name().c_str());
                     (void)aAgent.remove(agentBestAction, flecs::Wildcard);
 
-                    std::int32_t index{};
                     flecs::entity bestAction;
                     decltype(Consideration::m_score) bestScore{};
+
+                    std::int32_t index{};
                     while (flecs::entity action = aAgent.target(agentHasAction, index++))
                     {
                         SOGE_INFO_LOG(R"([PICK] Action name is "{}")", action.name().c_str());
+                        (void)action.remove(actionBestForAgent, flecs::Wildcard);
+
                         if (flecs::entity consideration = action.target_for<Consideration>(actionHasConsideration))
                         {
                             const auto considerationData = consideration.get<Consideration>();
@@ -137,6 +141,7 @@ namespace soge_game
                         return;
                     }
                     (void)aAgent.add(agentBestAction, bestAction);
+                    (void)bestAction.add(actionBestForAgent, aAgent);
                 });
 
             world.system<AgentTag>("Print the best action for agent")
@@ -153,6 +158,11 @@ namespace soge_game
                         SOGE_INFO_LOG(R"([PICK] No best action for agent "{}")", aAgent.name().c_str());
                     }
                 });
+
+            world.system<DrinkAction>("Drink action")
+                .kind(flecs::PostUpdate)
+                .with(actionBestForAgent, flecs::Wildcard)
+                .each([](DrinkAction) { SOGE_INFO_LOG("[ACT] Drinking some water..."); });
         }
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
