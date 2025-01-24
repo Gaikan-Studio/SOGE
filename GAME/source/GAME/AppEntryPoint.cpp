@@ -88,20 +88,6 @@ namespace soge_game
             (void)drinkAction.add(actionToConsideration, drinkConsideration);
             (void)drinkConsideration.add(considerationToAction, drinkAction);
 
-            world.system<DrinkConsideration, Consideration>("Update drink consideration")
-                .kind(flecs::PreUpdate)
-                .with(considerationToAction, flecs::Wildcard)
-                .each([considerationToAction, actionToAgent](const flecs::entity aConsideration, DrinkConsideration,
-                                                             Consideration& aConsiderationData) {
-                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", aConsideration.name().c_str());
-
-                    const flecs::entity action = aConsideration.target(considerationToAction);
-                    const flecs::entity agent = action.target_for<Thirst>(actionToAgent);
-
-                    const auto& [thirst] = *agent.get<Thirst>();
-                    aConsiderationData.m_score = thirst;
-                });
-
             struct RunAction
             {
             };
@@ -116,6 +102,20 @@ namespace soge_game
                 world.entity("Run consideration").set(Consideration{}).add<RunConsideration>();
             (void)runAction.add(actionToConsideration, runConsideration);
             (void)runConsideration.add(considerationToAction, runAction);
+
+            world.system<DrinkConsideration, Consideration>("Update drink consideration")
+                .kind(flecs::PreUpdate)
+                .with(considerationToAction, flecs::Wildcard)
+                .each([considerationToAction, actionToAgent](const flecs::entity aConsideration, DrinkConsideration,
+                                                             Consideration& aConsiderationData) {
+                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", aConsideration.name().c_str());
+
+                    const flecs::entity action = aConsideration.target(considerationToAction);
+                    const flecs::entity agent = action.target_for<Thirst>(actionToAgent);
+
+                    const auto& [thirst] = *agent.get<Thirst>();
+                    aConsiderationData.m_score = thirst;
+                });
 
             world.system<RunConsideration, Consideration>("Update run consideration")
                 .kind(flecs::PreUpdate)
@@ -187,8 +187,8 @@ namespace soge_game
                 .kind(flecs::PostUpdate)
                 .with(bestActionToAgent, flecs::Wildcard)
                 .each([bestActionToAgent](const flecs::entity aAction, DrinkAction) {
-                    const flecs::entity actionAgent = aAction.target(bestActionToAgent);
-                    auto& [thirst] = *actionAgent.get_mut<Thirst>();
+                    const flecs::entity agent = aAction.target(bestActionToAgent);
+                    auto& [thirst] = *agent.get_mut<Thirst>();
 
                     const auto prevThirst = thirst;
                     thirst = glm::max(prevThirst - 0.15f, 0.0f);
@@ -199,8 +199,8 @@ namespace soge_game
                 .kind(flecs::PostUpdate)
                 .with(bestActionToAgent, flecs::Wildcard)
                 .each([bestActionToAgent](const flecs::entity aAction, RunAction) {
-                    const flecs::entity actionAgent = aAction.target(bestActionToAgent);
-                    auto& [thirst] = *actionAgent.get_mut<Thirst>();
+                    const flecs::entity agent = aAction.target(bestActionToAgent);
+                    auto& [thirst] = *agent.get_mut<Thirst>();
 
                     const auto prevThirst = thirst;
                     thirst = glm::min(prevThirst + 0.1f, 1.0f);
