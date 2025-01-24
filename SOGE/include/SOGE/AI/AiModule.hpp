@@ -15,6 +15,9 @@ namespace soge
     public:
         explicit AiModule();
 
+        [[nodiscard]]
+        virtual UniquePtr<AiAgent> CreateAgent();
+
         virtual void Update();
 
         void Load(di::Container& aContainer, ModuleManager& aModuleManager) override;

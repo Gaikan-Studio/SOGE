@@ -37,4 +37,13 @@ namespace soge
 
         m_aiCore->Update();
     }
+
+    UniquePtr<AiAgent> AiModule::CreateAgent()
+    {
+        if (m_aiCore == nullptr)
+        {
+            return UniquePtr<AiAgent>{};
+        }
+        return m_aiCore->CreateAgent();
+    }
 }

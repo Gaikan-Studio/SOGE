@@ -1,7 +1,9 @@
 ﻿#ifndef SOGE_AI_AICORE_HPP
 #define SOGE_AI_AICORE_HPP
 
+#include "SOGE/AI/AiAgent.hpp"
 #include "SOGE/DI/Dependency.hpp"
+#include "SOGE/System/Memory.hpp"
 
 
 namespace soge
@@ -18,6 +20,9 @@ namespace soge
         constexpr AiCore& operator=(AiCore&&) noexcept = default;
 
         constexpr virtual ~AiCore() noexcept = default;
+
+        [[nodiscard]]
+        constexpr virtual UniquePtr<AiAgent> CreateAgent() = 0;
 
         constexpr virtual void Update() = 0;
     };

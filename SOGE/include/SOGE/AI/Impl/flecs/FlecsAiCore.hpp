@@ -17,6 +17,9 @@ namespace soge
     public:
         explicit FlecsAiCore();
 
+        [[nodiscard]]
+        UniquePtr<AiAgent> CreateAgent() override;
+
         void Update() override;
     };
 }

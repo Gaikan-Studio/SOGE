@@ -2,6 +2,7 @@
 
 #include "GAME/Layers/MainGameLayer.hpp"
 
+#include <SOGE/AI/AiModule.hpp>
 #include <SOGE/Core/EntryPoint.hpp>
 #include <SOGE/Event/EventModule.hpp>
 #include <SOGE/Event/InputEvents.hpp>
@@ -44,6 +45,10 @@ namespace soge_game
         const auto windowModule = GetModule<soge::WindowModule>();
         const auto graphicsModule = GetModule<soge::GraphicsModule>();
         const auto soundModule = GetModule<soge::SoundModule>();
+        const auto aiModule = GetModule<soge::AiModule>();
+
+        const auto aiAgent = aiModule->CreateAgent();
+        SOGE_INFO_LOG("Created AI agent");
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
         SOGE_INFO_LOG(R"(Created window "{}" of width {} and height {} with UUID {})",
