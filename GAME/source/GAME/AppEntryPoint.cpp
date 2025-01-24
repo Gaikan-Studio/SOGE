@@ -45,10 +45,25 @@ namespace soge_game
         const auto windowModule = GetModule<soge::WindowModule>();
         const auto graphicsModule = GetModule<soge::GraphicsModule>();
         const auto soundModule = GetModule<soge::SoundModule>();
-        const auto aiModule = GetModule<soge::AiModule>();
 
-        const auto aiAgent = aiModule->CreateAgent("Test agent");
-        SOGE_INFO_LOG(R"(Created AI agent with name of "{}")", aiAgent.GetName().data());
+        {
+            const auto aiModule = GetModule<soge::AiModule>();
+
+            struct Thirst
+            {
+                float m_thirst{};
+            };
+
+            const auto aiAgent = aiModule->CreateAgent("Test agent");
+            SOGE_INFO_LOG(R"(Created AI agent with name of "{}")", aiAgent.GetName().data());
+            aiAgent.GetEntity().set(Thirst{.m_thirst = 1.0f});
+
+            auto drinkAction = aiModule->CreateAction<Thirst>("Drink some water", [](Thirst& aThirst) {
+                const auto prevThirst = aThirst.m_thirst;
+                aThirst.m_thirst = glm::max(prevThirst - 0.1f, 0.0f);
+                SOGE_INFO_LOG("Drinking some water... thirst was {}, but now is {}", prevThirst, aThirst.m_thirst);
+            });
+        }
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
         SOGE_INFO_LOG(R"(Created window "{}" of width {} and height {} with UUID {})",

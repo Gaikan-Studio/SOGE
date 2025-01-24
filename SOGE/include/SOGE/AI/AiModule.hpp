@@ -22,6 +22,13 @@ namespace soge
         AiAgent CreateAgent(eastl::string_view aName = "");
         void DestroyAgent(AiAgent aAgent);
 
+        template <typename... Components, typename Func>
+        [[nodiscard]]
+        flecs::system CreateAction(const eastl::string_view aName, const Func& aFunc)
+        {
+            return m_world.system<Components...>(aName.data()).kind(flecs::PostUpdate).each(aFunc);
+        }
+
         virtual void Update();
 
         void Load(di::Container& aContainer, ModuleManager& aModuleManager) override;
