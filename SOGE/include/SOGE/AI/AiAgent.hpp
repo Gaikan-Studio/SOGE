@@ -1,21 +1,36 @@
 ﻿#ifndef SOGE_AI_AIAGENT_HPP
 #define SOGE_AI_AIAGENT_HPP
 
+#include <flecs.h>
+#include <flecs/addons/cpp/entity.hpp>
+
 
 namespace soge
 {
     class AiAgent
     {
+    private:
+        friend class AiModule;
+
+        explicit AiAgent(flecs::entity aEntity);
+
+        flecs::entity m_entity;
+
     public:
-        constexpr explicit AiAgent() noexcept = default;
+        AiAgent(const AiAgent&) = delete;
+        AiAgent& operator=(const AiAgent&) = delete;
 
-        constexpr AiAgent(const AiAgent&) noexcept = delete;
-        constexpr AiAgent& operator=(const AiAgent&) noexcept = delete;
+        AiAgent(AiAgent&&) noexcept = default;
+        AiAgent& operator=(AiAgent&&) noexcept = default;
 
-        constexpr AiAgent(AiAgent&&) noexcept = default;
-        constexpr AiAgent& operator=(AiAgent&&) noexcept = default;
+        ~AiAgent() noexcept;
 
-        constexpr virtual ~AiAgent() = default;
+        [[nodiscard]]
+        flecs::entity GetEntity() const;
+
+        [[nodiscard]]
+        eastl::string_view GetName() const;
+        void SetName(eastl::string_view aName);
     };
 }
 

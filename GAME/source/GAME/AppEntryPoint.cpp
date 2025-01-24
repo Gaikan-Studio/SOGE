@@ -47,8 +47,8 @@ namespace soge_game
         const auto soundModule = GetModule<soge::SoundModule>();
         const auto aiModule = GetModule<soge::AiModule>();
 
-        const auto aiAgent = aiModule->CreateAgent();
-        SOGE_INFO_LOG("Created AI agent");
+        const auto aiAgent = aiModule->CreateAgent("Test agent");
+        SOGE_INFO_LOG(R"(Created AI agent with name of "{}")", aiAgent.GetName().data());
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
         SOGE_INFO_LOG(R"(Created window "{}" of width {} and height {} with UUID {})",

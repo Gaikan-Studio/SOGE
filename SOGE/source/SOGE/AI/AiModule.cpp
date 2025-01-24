@@ -2,48 +2,42 @@
 
 #include "SOGE/AI/AiModule.hpp"
 
-#include "SOGE/AI/Impl/flecs/FlecsAiCore.hpp"
-#include "SOGE/DI/Container.hpp"
+#include "SOGE/Core/Timestep.hpp"
 
 
 namespace soge
 {
-    AiModule::AiModule() : m_aiCore{nullptr}
-    {
-    }
+    AiModule::AiModule() = default;
 
     void AiModule::Load(di::Container& aContainer, ModuleManager& aModuleManager)
     {
         SOGE_INFO_LOG("AI module loaded...");
-
-        aContainer.Create<FlecsAiCore>();
-
-        m_aiCore = &aContainer.Provide<AiCore>();
     }
 
     void AiModule::Unload(di::Container& aContainer, ModuleManager& aModuleManager)
     {
         SOGE_INFO_LOG("AI module unloaded...");
+    }
 
-        m_aiCore = nullptr;
+    AiAgent AiModule::CreateAgent(const eastl::string_view aName)
+    {
+        const auto entity = m_world.entity();
+        if (!aName.empty())
+        {
+            (void)entity.set_name(aName.data());
+        }
+
+        return AiAgent{entity};
+    }
+
+    void AiModule::DestroyAgent(AiAgent aAgent)
+    {
+        const auto entity = aAgent.GetEntity();
+        entity.destruct();
     }
 
     void AiModule::Update()
     {
-        if (m_aiCore == nullptr)
-        {
-            return;
-        }
-
-        m_aiCore->Update();
-    }
-
-    UniquePtr<AiAgent> AiModule::CreateAgent()
-    {
-        if (m_aiCore == nullptr)
-        {
-            return UniquePtr<AiAgent>{};
-        }
-        return m_aiCore->CreateAgent();
+        (void)m_world.progress(Timestep::DeltaTime());
     }
 }

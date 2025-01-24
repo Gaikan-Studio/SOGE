@@ -1,8 +1,11 @@
 ﻿#ifndef SOGE_AI_AIMODULE_HPP
 #define SOGE_AI_AIMODULE_HPP
 
-#include "SOGE/AI/AiCore.hpp"
+#include "SOGE/AI/AiAgent.hpp"
 #include "SOGE/Core/Module.hpp"
+
+#include <flecs.h>
+#include <flecs/addons/cpp/world.hpp>
 
 
 namespace soge
@@ -10,13 +13,14 @@ namespace soge
     class AiModule : public Module
     {
     private:
-        AiCore* m_aiCore;
+        flecs::world m_world;
 
     public:
         explicit AiModule();
 
         [[nodiscard]]
-        virtual UniquePtr<AiAgent> CreateAgent();
+        AiAgent CreateAgent(eastl::string_view aName = "");
+        void DestroyAgent(AiAgent aAgent);
 
         virtual void Update();
 
