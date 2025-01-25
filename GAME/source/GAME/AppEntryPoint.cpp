@@ -52,6 +52,7 @@ namespace soge_game
         {
             float m_thirst{};
             float m_timeBeforeNextDrink{};
+            bool m_wasRunning{};
         };
 
         struct DrinkAction
@@ -124,7 +125,7 @@ namespace soge_game
                 auto action = aiModule->GetAttachedAction(*consideration);
                 auto agent = aiModule->GetAttachedAgent(*action);
 
-                const auto& [thirst, timeBeforeNextDrink] = *agent->GetEntity().get<Thirst>();
+                const auto& [thirst, timeBeforeNextDrink, wasRunning] = *agent->GetEntity().get<Thirst>();
                 aConsideration.m_score = timeBeforeNextDrink <= 0.0f ? thirst : 0.0f;
             });
 
@@ -136,8 +137,8 @@ namespace soge_game
                 auto action = aiModule->GetAttachedAction(*consideration);
                 auto agent = aiModule->GetAttachedAgent(*action);
 
-                const auto& [thirst, _] = *agent->GetEntity().get<Thirst>();
-                aConsideration.m_score = thirst < 0.25f ? 1.0f - thirst : 0.0f;
+                const auto& [thirst, timeBeforeNextDrink, wasRunning] = *agent->GetEntity().get<Thirst>();
+                aConsideration.m_score = thirst < 0.3f ? 1.0f - thirst : 0.0f;
             });
 
         aiModule->CreateActionSystem<DrinkAction>("Perform drink action")
@@ -145,10 +146,10 @@ namespace soge_game
                 auto action = aiModule->GetAction(aEntity);
                 auto agent = aiModule->GetAgentFromBest(*action);
 
-                auto& [thirst, timeBeforeNextDrink] = *agent->GetEntity().get_mut<Thirst>();
+                auto& [thirst, timeBeforeNextDrink, wasRunning] = *agent->GetEntity().get_mut<Thirst>();
                 const auto prevThirst = thirst;
-                thirst = glm::max(prevThirst - random.GenFloat(0.2f, 0.3f), 0.0f);
-                timeBeforeNextDrink = 2.0f;
+                thirst = glm::max(prevThirst - random.GenFloat(0.4f, 0.6f), 0.0f);
+                timeBeforeNextDrink = 3.0f;
                 SOGE_INFO_LOG(R"([ACT] "{}" is drinking some water... thirst was {}, but now is {})",
                               agent->GetName().data(), prevThirst, thirst);
             });
@@ -159,9 +160,10 @@ namespace soge_game
                 auto action = aiModule->GetAction(entity);
                 auto agent = aiModule->GetAgentFromBest(*action);
 
-                auto& [thirst, _] = *agent->GetEntity().get_mut<Thirst>();
+                auto& [thirst, timeBeforeNextDrink, wasRunning] = *agent->GetEntity().get_mut<Thirst>();
                 const auto prevThirst = thirst;
-                thirst = glm::min(prevThirst + random.GenFloat(0.1f, 0.3f) * aIter.delta_time(), 1.0f);
+                thirst = glm::min(prevThirst + random.GenFloat(0.3f, 0.4f) * aIter.delta_time(), 1.0f);
+                wasRunning = true;
                 SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
                               agent->GetName().data(), prevThirst, thirst);
             });
@@ -316,10 +318,14 @@ namespace soge_game
             *lightMouseDeltaX = 0.0f;
             *lightMouseDeltaY = 0.0f;
 
-            auto& [thirst, timeBeforeNextDrink] = *agent.GetEntity().get_mut<Thirst>();
-            SOGE_INFO_LOG("Agent thirst is {}, time before next drink is {}", thirst, timeBeforeNextDrink);
+            auto& [thirst, timeBeforeNextDrink, wasRunning] = *agent.GetEntity().get_mut<Thirst>();
+            thirst = glm::min(thirst + 0.1f * aEvent.GetDeltaTime(), 1.0f);
             timeBeforeNextDrink = glm::max(timeBeforeNextDrink - aEvent.GetDeltaTime(), 0.0f);
-            human.GetColor() = glm::vec3{0.0f, thirst, 0.0f};
+            SOGE_INFO_LOG("Agent thirst is {}, time before next drink is {}, if agent was running recently? {}", thirst,
+                          timeBeforeNextDrink, wasRunning);
+
+            human.GetColor() = glm::vec3{wasRunning ? 1.0f : 0.0f, 1.0f - thirst, 0.0f};
+            wasRunning = false;
         };
         eventModule->PushBack<soge::UpdateEvent>(update);
     }
