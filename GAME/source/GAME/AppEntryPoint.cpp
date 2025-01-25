@@ -12,6 +12,7 @@
 #include <SOGE/Graphics/Entities/StaticMeshEntity.hpp>
 #include <SOGE/Graphics/GraphicsModule.hpp>
 #include <SOGE/Math/Camera.hpp>
+#include <SOGE/Math/Random/Random.hpp>
 #include <SOGE/Window/WindowModule.hpp>
 
 #undef CreateWindow
@@ -43,124 +44,127 @@ namespace soge_game
         const auto soundModule = GetModule<soge::SoundModule>();
         const auto aiModule = GetModule<soge::AiModule>();
 
+        soge::Random random;
+
+        using Consideration = soge::AiModule::Consideration;
+
+        struct Thirst
         {
-            using Consideration = soge::AiModule::Consideration;
+            float m_thirst{};
+            float m_timeBeforeNextDrink{};
+        };
 
-            struct Thirst
-            {
-                float m_thirst{};
-            };
+        struct DrinkAction
+        {
+        };
 
-            struct DrinkAction
-            {
-            };
+        struct RunAction
+        {
+        };
 
-            struct RunAction
-            {
-            };
+        struct DrinkConsideration
+        {
+        };
 
-            struct DrinkConsideration
-            {
-            };
+        struct RunConsideration
+        {
+        };
 
-            struct RunConsideration
-            {
-            };
+        auto agent = aiModule->CreateAgent("Thirsty agent");
+        agent.GetEntity().set(Thirst{.m_thirst = 0.25f});
 
-            auto agent = aiModule->CreateAgent("Thirsty agent");
-            agent.GetEntity().set(Thirst{.m_thirst = 0.25f});
+        auto drinkAction = aiModule->CreateAction("Drink water action");
+        (void)drinkAction.GetEntity().add<DrinkAction>();
 
-            auto drinkAction = aiModule->CreateAction("Drink water action");
-            (void)drinkAction.GetEntity().add<DrinkAction>();
+        aiModule->AttachActionToAgent(drinkAction, agent);
 
-            aiModule->AttachActionToAgent(drinkAction, agent);
+        auto drinkConsideration = aiModule->CreateConsideration("Drink consideration");
+        (void)drinkConsideration.GetEntity().add<DrinkConsideration>();
 
-            auto drinkConsideration = aiModule->CreateConsideration("Drink consideration");
-            (void)drinkConsideration.GetEntity().add<DrinkConsideration>();
+        aiModule->AttachConsiderationToAction(drinkConsideration, drinkAction);
 
-            aiModule->AttachConsiderationToAction(drinkConsideration, drinkAction);
+        auto runAction = aiModule->CreateAction("Run action");
+        (void)runAction.GetEntity().add<RunAction>();
 
-            auto runAction = aiModule->CreateAction("Run action");
-            (void)runAction.GetEntity().add<RunAction>();
+        aiModule->AttachActionToAgent(runAction, agent);
 
-            aiModule->AttachActionToAgent(runAction, agent);
+        auto runConsideration = aiModule->CreateConsideration("Run consideration");
+        (void)runConsideration.GetEntity().add<RunConsideration>();
 
-            auto runConsideration = aiModule->CreateConsideration("Run consideration");
-            (void)runConsideration.GetEntity().add<RunConsideration>();
+        aiModule->AttachConsiderationToAction(runConsideration, runAction);
 
-            aiModule->AttachConsiderationToAction(runConsideration, runAction);
+        // auto agent2 = aiModule->CreateAgent("Thirsty agent 2");
+        // agent2.GetEntity().set(Thirst{.m_thirst = 0.75f});
+        //
+        // auto drinkAction2 = aiModule->CreateAction("Drink water action 2");
+        // (void)drinkAction2.GetEntity().add<DrinkAction>();
+        //
+        // aiModule->AttachActionToAgent(drinkAction2, agent2);
+        //
+        // auto drinkConsideration2 = aiModule->CreateConsideration("Drink consideration 2");
+        // (void)drinkConsideration2.GetEntity().add<DrinkConsideration>();
+        //
+        // aiModule->AttachConsiderationToAction(drinkConsideration2, drinkAction2);
+        //
+        // auto runAction2 = aiModule->CreateAction("Run action 2");
+        // (void)runAction2.GetEntity().add<RunAction>();
+        //
+        // aiModule->AttachActionToAgent(runAction2, agent2);
+        //
+        // auto runConsideration2 = aiModule->CreateConsideration("Run consideration 2");
+        // (void)runConsideration2.GetEntity().add<RunConsideration>();
+        //
+        // aiModule->AttachConsiderationToAction(runConsideration2, runAction2);
 
-            auto agent2 = aiModule->CreateAgent("Thirsty agent 2");
-            agent2.GetEntity().set(Thirst{.m_thirst = 0.75f});
+        aiModule->CreateConsiderationSystem<DrinkConsideration>("Update drink consideration")
+            .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, DrinkConsideration) {
+                auto consideration = aiModule->GetConsideration(aEntity);
+                SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
 
-            auto drinkAction2 = aiModule->CreateAction("Drink water action 2");
-            (void)drinkAction2.GetEntity().add<DrinkAction>();
+                auto action = aiModule->GetAttachedAction(*consideration);
+                auto agent = aiModule->GetAttachedAgent(*action);
 
-            aiModule->AttachActionToAgent(drinkAction2, agent2);
+                const auto& [thirst, timeBeforeNextDrink] = *agent->GetEntity().get<Thirst>();
+                aConsideration.m_score = timeBeforeNextDrink <= 0.0f ? thirst : 0.0f;
+            });
 
-            auto drinkConsideration2 = aiModule->CreateConsideration("Drink consideration 2");
-            (void)drinkConsideration2.GetEntity().add<DrinkConsideration>();
+        aiModule->CreateConsiderationSystem<RunConsideration>("Update run consideration")
+            .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, RunConsideration) {
+                auto consideration = aiModule->GetConsideration(aEntity);
+                SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
 
-            aiModule->AttachConsiderationToAction(drinkConsideration2, drinkAction2);
+                auto action = aiModule->GetAttachedAction(*consideration);
+                auto agent = aiModule->GetAttachedAgent(*action);
 
-            auto runAction2 = aiModule->CreateAction("Run action 2");
-            (void)runAction2.GetEntity().add<RunAction>();
+                const auto& [thirst, _] = *agent->GetEntity().get<Thirst>();
+                aConsideration.m_score = thirst < 0.25f ? 1.0f - thirst : 0.0f;
+            });
 
-            aiModule->AttachActionToAgent(runAction2, agent2);
+        aiModule->CreateActionSystem<DrinkAction>("Perform drink action")
+            .each([aiModule, &random](const flecs::entity aEntity, DrinkAction) {
+                auto action = aiModule->GetAction(aEntity);
+                auto agent = aiModule->GetAgentFromBest(*action);
 
-            auto runConsideration2 = aiModule->CreateConsideration("Run consideration 2");
-            (void)runConsideration2.GetEntity().add<RunConsideration>();
+                auto& [thirst, timeBeforeNextDrink] = *agent->GetEntity().get_mut<Thirst>();
+                const auto prevThirst = thirst;
+                thirst = glm::max(prevThirst - random.GenFloat(0.2f, 0.3f), 0.0f);
+                timeBeforeNextDrink = 2.0f;
+                SOGE_INFO_LOG(R"([ACT] "{}" is drinking some water... thirst was {}, but now is {})",
+                              agent->GetName().data(), prevThirst, thirst);
+            });
 
-            aiModule->AttachConsiderationToAction(runConsideration2, runAction2);
+        aiModule->CreateActionSystem<RunAction>("Perform run action")
+            .each([aiModule, &random](const flecs::iter& aIter, const std::size_t aIndex, RunAction) {
+                const auto entity = aIter.entity(aIndex);
+                auto action = aiModule->GetAction(entity);
+                auto agent = aiModule->GetAgentFromBest(*action);
 
-            aiModule->CreateConsiderationSystem<DrinkConsideration>("Update drink consideration")
-                .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, DrinkConsideration) {
-                    auto consideration = aiModule->GetConsideration(aEntity);
-                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
-
-                    auto action = aiModule->GetAttachedAction(*consideration);
-                    auto agent = aiModule->GetAttachedAgent(*action);
-
-                    const auto& [thirst] = *agent->GetEntity().get<Thirst>();
-                    aConsideration.m_score = thirst;
-                });
-
-            aiModule->CreateConsiderationSystem<RunConsideration>("Update run consideration")
-                .each([aiModule](const flecs::entity aEntity, Consideration& aConsideration, RunConsideration) {
-                    auto consideration = aiModule->GetConsideration(aEntity);
-                    SOGE_INFO_LOG(R"([UPD] Updating "{}" consideration...)", consideration->GetName().data());
-
-                    auto action = aiModule->GetAttachedAction(*consideration);
-                    auto agent = aiModule->GetAttachedAgent(*action);
-
-                    const auto& [thirst] = *agent->GetEntity().get<Thirst>();
-                    aConsideration.m_score = 1.0f - thirst;
-                });
-
-            aiModule->CreateActionSystem<DrinkAction>("Perform drink action")
-                .each([aiModule](const flecs::entity aAction, DrinkAction) {
-                    auto action = aiModule->GetAction(aAction);
-                    auto agent = aiModule->GetAgentFromBest(*action);
-
-                    auto& [thirst] = *agent->GetEntity().get_mut<Thirst>();
-                    const auto prevThirst = thirst;
-                    thirst = glm::max(prevThirst - 0.15f, 0.0f);
-                    SOGE_INFO_LOG(R"([ACT] "{}" is drinking some water... thirst was {}, but now is {})",
-                                  agent->GetName().data(), prevThirst, thirst);
-                });
-
-            aiModule->CreateActionSystem<RunAction>("Perform run action")
-                .each([aiModule](const flecs::entity aAction, RunAction) {
-                    auto action = aiModule->GetAction(aAction);
-                    auto agent = aiModule->GetAgentFromBest(*action);
-
-                    auto& [thirst] = *agent->GetEntity().get_mut<Thirst>();
-                    const auto prevThirst = thirst;
-                    thirst = glm::min(prevThirst + 0.1f, 1.0f);
-                    SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
-                                  agent->GetName().data(), prevThirst, thirst);
-                });
-        }
+                auto& [thirst, _] = *agent->GetEntity().get_mut<Thirst>();
+                const auto prevThirst = thirst;
+                thirst = glm::min(prevThirst + random.GenFloat(0.1f, 0.5f) * aIter.delta_time(), 1.0f);
+                SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
+                              agent->GetName().data(), prevThirst, thirst);
+            });
 
         const auto [window, windowUuid] = windowModule->CreateWindow();
         SOGE_INFO_LOG(R"(Created window "{}" of width {} and height {} with UUID {})",
@@ -177,7 +181,7 @@ namespace soge_game
         SOGE_INFO_LOG(R"(Created human with UUID {})", humanUuid.str());
         human.GetFilePath() = "./resources/meshes/cartoon-human.fbx";
         human.GetTransform() = soge::Transform{
-            // .m_position = glm::vec3{0.0f, 0.0f, 10.0f},
+            .m_position = glm::vec3{0.0f, -0.75f, 0.0f},
             .m_rotation = glm::vec3{0.0f, glm::radians(180.0f), 0.0f},
             .m_scale = glm::vec3{0.001f},
         };
@@ -311,6 +315,10 @@ namespace soge_game
             *cameraMouseDeltaY = 0.0f;
             *lightMouseDeltaX = 0.0f;
             *lightMouseDeltaY = 0.0f;
+
+            auto& [thirst, timeBeforeNextDrink] = *agent.GetEntity().get_mut<Thirst>();
+            SOGE_INFO_LOG("Agent thirst is {}, time before next drink is {}", thirst, timeBeforeNextDrink);
+            timeBeforeNextDrink = glm::max(timeBeforeNextDrink - aEvent.GetDeltaTime(), 0.0f);
         };
         eventModule->PushBack<soge::UpdateEvent>(update);
     }
