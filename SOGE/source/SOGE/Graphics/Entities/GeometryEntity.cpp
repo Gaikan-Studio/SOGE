@@ -10,7 +10,7 @@ namespace soge
     GeometryEntity::GeometryEntity(GraphicsCore& aCore, GeometryGraphicsPipeline& aPipeline, Transform aTransform,
                                    Material aMaterial, eastl::vector<Vertex> aVertices, eastl::vector<Index> aIndices,
                                    nvrhi::TextureHandle aColorTexture)
-        : m_core{aCore}, m_pipeline{aPipeline}, m_transform{aTransform}, m_material{aMaterial},
+        : m_core{aCore}, m_pipeline{aPipeline}, m_transform{aTransform}, m_material{aMaterial}, m_color{1.0f},
           m_vertices{std::move(aVertices)}, m_indices{std::move(aIndices)}, m_shouldWriteConstantBuffer{true},
           m_shouldWriteVertexBuffer{true}, m_shouldWriteIndexBuffer{true}, m_nvrhiColorTexture{std::move(aColorTexture)}
     {
@@ -84,6 +84,17 @@ namespace soge
         return m_indices;
     }
 
+    glm::vec3 GeometryEntity::GetColor() const
+    {
+        return m_color;
+    }
+
+    glm::vec3& GeometryEntity::GetColor()
+    {
+        m_shouldWriteConstantBuffer = true;
+        return m_color;
+    }
+
     nvrhi::ITexture* GeometryEntity::GetColorTexture() const
     {
         return m_nvrhiColorTexture;
@@ -146,6 +157,7 @@ namespace soge
         const ConstantBufferData constantBufferData{
             .m_model = m_transform.WorldMatrix(),
             .m_material = m_material,
+            .m_color = m_color,
             .m_hasColorTexture = m_nvrhiColorTexture != nullptr,
         };
         aCommandList.writeBuffer(m_nvrhiConstantBuffer, &constantBufferData, sizeof(constantBufferData));

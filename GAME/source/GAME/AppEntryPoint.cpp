@@ -161,7 +161,7 @@ namespace soge_game
 
                 auto& [thirst, _] = *agent->GetEntity().get_mut<Thirst>();
                 const auto prevThirst = thirst;
-                thirst = glm::min(prevThirst + random.GenFloat(0.1f, 0.5f) * aIter.delta_time(), 1.0f);
+                thirst = glm::min(prevThirst + random.GenFloat(0.1f, 0.3f) * aIter.delta_time(), 1.0f);
                 SOGE_INFO_LOG(R"([ACT] "{}" is running somewhere... thirst was {}, but now is {})",
                               agent->GetName().data(), prevThirst, thirst);
             });
@@ -286,7 +286,7 @@ namespace soge_game
         float lightPitch{glm::radians(45.0f)}, lightYaw{glm::radians(45.0f)};
         constexpr float cameraSpeed = 1.5f;
         constexpr float cameraSensitivity = 0.005f;
-        auto update = [=, &camera, &directionalLightEntity1](const soge::UpdateEvent& aEvent) mutable {
+        auto update = [=, &human, &camera, &directionalLightEntity1](const soge::UpdateEvent& aEvent) mutable {
             {
                 const float x = static_cast<float>(inputModule->IsKeyPressed(soge::Keys::D)) -
                                 static_cast<float>(inputModule->IsKeyPressed(soge::Keys::A));
@@ -319,6 +319,7 @@ namespace soge_game
             auto& [thirst, timeBeforeNextDrink] = *agent.GetEntity().get_mut<Thirst>();
             SOGE_INFO_LOG("Agent thirst is {}, time before next drink is {}", thirst, timeBeforeNextDrink);
             timeBeforeNextDrink = glm::max(timeBeforeNextDrink - aEvent.GetDeltaTime(), 0.0f);
+            human.GetColor() = glm::vec3{0.0f, thirst, 0.0f};
         };
         eventModule->PushBack<soge::UpdateEvent>(update);
     }

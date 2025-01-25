@@ -24,6 +24,7 @@ namespace soge
 
         Transform m_transform;
         Material m_material;
+        glm::vec3 m_color;
         eastl::vector<Vertex> m_vertices;
         eastl::vector<Index> m_indices;
 
@@ -60,6 +61,10 @@ namespace soge
         [[nodiscard]]
         eastl::span<const Index> GetIndices() const;
         eastl::vector<Index>& GetIndices();
+
+        [[nodiscard]]
+        glm::vec3 GetColor() const;
+        glm::vec3& GetColor();
 
         [[nodiscard]]
         nvrhi::ITexture* GetColorTexture() const;

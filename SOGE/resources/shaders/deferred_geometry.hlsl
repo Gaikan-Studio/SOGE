@@ -14,7 +14,7 @@ cbuffer Object_ConstantBuffer : register(b1)
     float3 specular;
     float shininess;
     float3 emissive;
-    float __padding;
+    float3 color;
     bool hasColorTexture;
 }
 
@@ -40,7 +40,7 @@ VS_Output VSMain(VS_Input input)
 
     output.position = mul(mul(viewProjection, model), float4(input.position, 1.0f));
     output.normal = normalize(mul(model, float4(input.normal, 0.0f)).xyz);
-    output.color = input.color;
+    output.color = input.color * color;
     output.texCoord = input.texCoord;
 
     return output;

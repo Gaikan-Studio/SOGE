@@ -68,6 +68,7 @@ namespace soge
 
             glm::mat4x4 m_model;
             Material m_material;
+            glm::vec3 m_color{1.0f};
             std::uint32_t m_hasColorTexture = false;
         };
 

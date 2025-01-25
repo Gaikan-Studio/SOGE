@@ -13,6 +13,8 @@ namespace soge
         [[nodiscard]]
         constexpr virtual Transform GetTransform() const = 0;
         [[nodiscard]]
+        constexpr virtual glm::vec3 GetColor() const = 0;
+        [[nodiscard]]
         constexpr virtual eastl::span<const Vertex> GetVertices() const = 0;
         [[nodiscard]]
         constexpr virtual eastl::span<const Index> GetIndices() const = 0;

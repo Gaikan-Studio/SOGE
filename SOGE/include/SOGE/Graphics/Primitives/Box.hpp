@@ -51,7 +51,7 @@ namespace soge
         glm::vec3& GetDimensions();
 
         [[nodiscard]]
-        glm::vec3 GetColor() const;
+        glm::vec3 GetColor() const override;
         glm::vec3& GetColor();
 
         [[nodiscard]]

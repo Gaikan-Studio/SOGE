@@ -228,7 +228,8 @@ namespace soge
     StaticMeshEntity::StaticMeshEntity(GraphicsCore& aCore, GeometryGraphicsPipeline& aPipeline,
                                        GraphicsModule& aGraphicsModule)
         : m_core{aCore}, m_pipeline{aPipeline}, m_entityManager{aGraphicsModule.GetEntityManager()},
-          m_hierarchy{CreateUnique<Hierarchy>()}, m_shouldReadFromFile{false}, m_shouldUpdateTransforms{false}
+          m_hierarchy{CreateUnique<Hierarchy>()}, m_color{1.0f}, m_shouldReadFromFile{false},
+          m_shouldUpdateTransforms{false}
     {
     }
 
@@ -246,6 +247,17 @@ namespace soge
     {
         m_shouldUpdateTransforms = true;
         return m_hierarchy->m_transforms[0].m_localTransform;
+    }
+
+    glm::vec3 StaticMeshEntity::GetColor() const
+    {
+        return m_color;
+    }
+
+    glm::vec3& StaticMeshEntity::GetColor()
+    {
+        m_shouldUpdateTransforms = true;
+        return m_color;
     }
 
     const cppfs::FilePath& StaticMeshEntity::GetFilePath() const
@@ -314,6 +326,7 @@ namespace soge
                 return;
             }
             entity->GetTransform() = m_hierarchy->GetWorldTransform(hierarchyIndex);
+            entity->GetColor() = m_color;
         }
     }
 }

@@ -10,9 +10,8 @@ namespace soge
     [[nodiscard]]
     GeometryEntity CreateSphere(GraphicsCore& aCore, GeometryGraphicsPipeline& aPipeline,
                                 const Transform& aTransform = Transform{},
-                                const GeometryEntity::Material& aMaterial = {},
-                                uint32_t aMeridians = 32, uint32_t aParallels = 16, float aRadius = 1.0f,
-                                glm::vec3 aColor = glm::vec3{1.0f});
+                                const GeometryEntity::Material& aMaterial = {}, uint32_t aMeridians = 32,
+                                uint32_t aParallels = 16, float aRadius = 1.0f, glm::vec3 aColor = glm::vec3{1.0f});
 
     [[nodiscard]]
     eastl::vector<GeometryEntity::Vertex> CreateSphereVertices(uint32_t aMeridians = 32, uint32_t aParallels = 16,
@@ -61,7 +60,7 @@ namespace soge
         float& GetRadius();
 
         [[nodiscard]]
-        glm::vec3 GetColor() const;
+        glm::vec3 GetColor() const override;
         glm::vec3& GetColor();
 
         [[nodiscard]]

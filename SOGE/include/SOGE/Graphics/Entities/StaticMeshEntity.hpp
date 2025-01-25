@@ -21,6 +21,7 @@ namespace soge
 
         cppfs::FilePath m_filePath;
         UniquePtr<Hierarchy> m_hierarchy;
+        glm::vec3 m_color;
         bool m_shouldReadFromFile;
         bool m_shouldUpdateTransforms;
 
@@ -39,6 +40,10 @@ namespace soge
         [[nodiscard]]
         Transform GetTransform() const;
         Transform& GetTransform();
+
+        [[nodiscard]]
+        glm::vec3 GetColor() const;
+        glm::vec3& GetColor();
 
         [[nodiscard]]
         const cppfs::FilePath& GetFilePath() const;
