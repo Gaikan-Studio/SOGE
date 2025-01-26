@@ -70,6 +70,8 @@ bld/
 *.spv
 *.spirv
 
+./GAME/resources/
+
 # !Scripts/MakeSpriteFont.exe
 
 

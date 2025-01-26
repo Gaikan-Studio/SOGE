@@ -125,7 +125,7 @@ namespace soge_game
         boat.GetFilePath() = "./resources/meshes/boat/boat.fbx";
         boat.GetTransform() = soge::Transform{
             .m_position = glm::vec3{0.0f, 2.5f, 0.0f},
-            .m_rotation = glm::vec3{glm::radians(90.0f), 0.0f, glm::radians(-90.0f)},
+            .m_rotation = glm::vec3{glm::radians(90.0f), 0.0f, glm::radians(90.0f)},
             .m_scale = glm::vec3{0.005f},
         };
         boat.Load();
