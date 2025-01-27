@@ -14,6 +14,8 @@ workspace "SOGE"
     group "Dependencies"
         include "3rdparty/EASTL/premake5.lua"
         include "3rdparty/kangaru/premake5.lua"
+        include "3rdparty/jolt/premake5.lua"
+        include "3rdparty/NVRHI/premake5.lua"
 
         -- Doesn't shown as subproject in MSVC solution
 
@@ -21,7 +23,6 @@ workspace "SOGE"
         include "3rdparty/cppfs/premake5.lua"
         include "3rdparty/glm/premake5.lua"
         include "3rdparty/NRI/premake5.lua"
-        include "3rdparty/NVRHI/premake5.lua"
         include "3rdparty/ShaderMake/premake5.lua"
         include "3rdparty/Assimp/premake5.lua"
     group ""
@@ -67,7 +68,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
             "%{wks.location}/%{IncludeThirdpartyDirs.Assimp}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.stb}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.stb}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.Jolt}"
         }
 
         defines
@@ -82,7 +84,8 @@ workspace "SOGE"
             "SOGE_GRAPHICS_IMPL=D3D12", -- D3D11/D3D12/VK
             "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_D3D12=dxil",
             "SOGE_GRAPHICS_COMPILED_SHADER_EXTENSION_VK=spirv",
-            "SOGE_SOUND_IMPL=FMOD" -- FMOD/OAL
+            "SOGE_SOUND_IMPL=FMOD", -- FMOD/OAL
+            "SOGE_PHYSICS_IMPL=Jolt"
         }
 
         links
@@ -94,6 +97,7 @@ workspace "SOGE"
             "nvrhi_d3d12",
             "nvrhi_vk",
             "cppfs",
+            "Jolt",
 
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK_DLL}",
             "%{wks.location}/%{Libraries.FMOD_WIN64_FSBANK}",
@@ -140,7 +144,10 @@ workspace "SOGE"
             {
                 "SOGE_DEBUG",
                 "SOGE_ENABLE_ASSERT",
-                "TRACEDESIGNTIME=true"
+                "TRACEDESIGNTIME=true",
+                "JPH_FLOATING_POINT_EXCEPTIONS_ENABLED",
+                "JPH_DEBUG_RENDERER",
+                "JPH_PROFILE_ENABLED"
             }
 
             links 
@@ -272,7 +279,8 @@ workspace "SOGE"
             "%{wks.location}/%{IncludeThirdpartyDirs.XoshiroCpp}",
             "%{wks.location}/%{IncludeThirdpartyDirs.SDL3}",
             "%{wks.location}/%{IncludeThirdpartyDirs.NRI}",
-            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}"
+            "%{wks.location}/%{IncludeThirdpartyDirs.NVRHI}",
+            "%{wks.location}/%{IncludeThirdpartyDirs.Jolt}"
         }
 
         defines
@@ -282,7 +290,8 @@ workspace "SOGE"
 
         links
         {
-            "SOGE"
+            "SOGE",
+            "Jolt"
         }
 
         filter "system:windows"

@@ -8,6 +8,7 @@
 #include "SOGE/Input/InputModule.hpp"
 #include "SOGE/Sound/SoundModule.hpp"
 #include "SOGE/Window/WindowModule.hpp"
+#include "SOGE/Physics/PhysicsModule.hpp"
 
 
 namespace soge
@@ -68,6 +69,7 @@ namespace soge
         CreateModule<SoundModule>();
         CreateModule<WindowModule>();
         CreateModule<GraphicsModule>();
+        CreateModule<PhysicsModule>();
     }
 
     void Engine::Load(AccessTag)
